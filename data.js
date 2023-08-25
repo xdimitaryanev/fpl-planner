@@ -18,7 +18,7 @@ async function getGeneralInfo() {
 async function getPlayerInfo(playerId) {
     const generalInfo = await getGeneralInfo()
     const player = generalInfo.elements.filter(element=> element.id === playerId)
-    console.log(player[0].total_points)
+    console.log(player[0].web_name)
 }
 
 async function getCurrentGw() {
@@ -27,17 +27,12 @@ async function getCurrentGw() {
     return events.find(event => event.finished === false);
 }
 
-const teamIds = []
 
 async function loadTeam() {
     const team = await getPicks();
-    console.log(team)
     team.forEach(element => {
-        teamIds.push(element.element)
-        
-    });
-    teamIds.forEach(element => {
-        getPlayerInfo(element)
+        console.log(element)
+        getPlayerInfo(element.element)
     });
 }
 
