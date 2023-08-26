@@ -26,18 +26,17 @@ async function getPlayerInfo(playerId) {
     const response = await fetch(`https://fantasy.premierleague.com/api/element-summary/${playerId}/`);
     const playerFixtures = await response.json();
     const [nextFixture] = playerFixtures.fixtures
-    console.log(nextFixture.is_home);
+    console.log(nextFixture);
     let playerTeamId;
     playerTeamId = nextFixture.is_home ? nextFixture.team_h : nextFixture.team_a;
     console.log(playerTeamId)
     const teams = await getAllTeams();
     const playerTeam = teams.find(team => team.id === playerTeamId);
     console.log(playerTeam.name)
-
-    
     const data = await getGeneralInfo();
     const player = data.elements.find(element=> element.id === playerId);
-    return player; // single player object
+    console.log(player.web_name)
+    return [player, playerTeam.name, nextFixture]; // single player object
 }
 
 async function loadTeam() {
