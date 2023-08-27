@@ -14,7 +14,6 @@ async function getTeamInfo(userId, gw) {
 
 async function createUserInfo(userId, gw) {
     const teamInfo = await getTeamInfo(userId,gw)
-    console.log(teamInfo)
     const userInfoObject = {
         "total_points": teamInfo.entry_history.total_points,
         "overall_rank": teamInfo.entry_history.overall_rank,
@@ -56,7 +55,6 @@ async function getFixtureOfPlayer(playerId, gw) {
   const fixtureOfPlayer = playerFixtures.fixtures.find(
     (fixture) => fixture.event === gw
   );
-  console.log(fixtureOfPlayer);
   const playerTeamId = fixtureOfPlayer.is_home
     ? fixtureOfPlayer.team_h
     : fixtureOfPlayer.team_a;
@@ -88,7 +86,6 @@ async function getPlayerInfo(playerId) {
   const [playerNextFixtureTeamId, isHome] = nextFixture.is_home
     ? [nextFixture.team_a, "A"]
     : [nextFixture.team_h, "H"];
-  console.log(isHome);
   const teams = await getAllTeams();
   const playerTeam = teams.find((team) => team.id === playerTeamId);
   const opponentTeam = teams.find(
@@ -108,7 +105,6 @@ async function getPlayerInfo(playerId) {
 async function loadTeam(userId) {
   const team = await getPicks(userId);
   team.forEach((element) => {
-    console.log(element);
     getPlayerInfo(element.element);
   });
 }

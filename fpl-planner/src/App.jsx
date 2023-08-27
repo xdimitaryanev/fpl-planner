@@ -12,27 +12,35 @@ function App() {
     const [currentGw] = await getCurrentGw()
     const userInfo = await createUserInfo(userId, currentGw);
     setUserInfo(userInfo)
-    console.log(userInfo)
-    console.log(userInfo.total_points)
   }
 
-
-  const increaseGameWeek = async (e) => {
-    e.preventDefault();
+  const increaseGameWeek = () => {
     setGameWeek(prevGameWeek => prevGameWeek + 1);
-    const updatedUserData = await loadNextFixtures(userData);
-    setUserData(updatedUserData);
   };
 
-  const decreaseGameWeek = async (e) => {
-    e.preventDefault();
+  const decreaseGameWeek = () => {
     setGameWeek(prevGameWeek => prevGameWeek - 1);
-    const updatedUserData = await loadNextFixtures(userData);
-    setUserData(updatedUserData);
   };
 
-  const loadNextFixtures = async () => {
-    const playersPromises = userData.map(async player => await getFixtureOfPlayer(player[0].id, gameWeek));
+  async function updateUserData() {
+    const updatedUserData = await loadNextFixtures(userData);
+    setUserData(updatedUserData);
+
+  }
+
+  async function handleIncreaseBtn() {
+    increaseGameWeek()
+    await updateUserData()
+    console.log(gameWeek)
+  }
+
+  async function handleDecreaseBtn() {
+    decreaseGameWeek()
+    await updateUserData()
+  }
+
+  const loadNextFixtures = async (data) => {
+    const playersPromises = data.map(async player => await getFixtureOfPlayer(player[0].id, gameWeek+1));
     const playersArr = await Promise.all(playersPromises);
     console.log(playersArr)
     return playersArr;
@@ -45,6 +53,7 @@ function App() {
     const userPromises = userTeam.map(player => getPlayerInfo(player.element));
     const userData = await Promise.all(userPromises);
     const [nextGw] = await getNextGw();
+    console.log(nextGw)
     setUserData(userData);
     setGameWeek(nextGw) 
   };
@@ -69,11 +78,11 @@ function App() {
         </button>
       </form>
       <button
-      onClick={decreaseGameWeek}
+      onClick={handleDecreaseBtn}
       >-</button>
       <h1>{gameWeek}</h1>
       <button
-      onClick={increaseGameWeek}
+      onClick={handleIncreaseBtn}
 
       >+</button>
 <div>{userInfo.total_points} - {userInfo.overall_rank} </div>
