@@ -10,7 +10,6 @@ function App() {
 
 
   useEffect(() => {
-
     async function loadFixturesOfUserTeam() {
       const playersPromises = userData.map(async player => await getFixtureOfPlayer(player[0].id, gameWeek));
       const playersArr = await Promise.all(playersPromises);
@@ -38,7 +37,7 @@ function App() {
     const userTeam = await getPicks(userId);
     const userPromises = userTeam.map(player => getFixtureOfPlayer(player.element, nextGw ));
     const userData = await Promise.all(userPromises);
-    console.log(nextGw)
+    console.log(userData)
     setUserData(prevUserData => prevUserData = userData);
     setGameWeek(prevGameWeek => prevGameWeek = nextGw) 
   }
@@ -70,10 +69,11 @@ function App() {
       onClick={increaseGameWeek}
 
       >+</button>
-<div>{userInfo.total_points} - {userInfo.overall_rank} </div>
+<div>{userInfo.total_points} - {userInfo.overall_rank} - {userInfo.event_transfers} - {userInfo.gameweek_rank} -{userInfo.user_bank} - {userInfo.event_transfers_cost} - </div>
       <ul>
         {userData.map(player => (
           <li key={player[0].id}>
+            <img src={player[0].element_type === 1 ? `${player[1]}-GK.webp` : `${player[1]}.webp`} alt="" />
             {player[0].web_name} - {player[1]} - {player[2]} - {player[3]}, {player[5]}
           </li>
         ))}

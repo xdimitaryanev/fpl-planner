@@ -5,7 +5,7 @@ async function getGeneralInfo() {
   return await response.json();
 }
 
-async function getTeamInfo(userId, gw) {
+async function getUserInfo(userId, gw) {
   const response = await fetch(
     `https://fantasy.premierleague.com/api/entry/${userId}/event/${gw}/picks/`
   );
@@ -13,19 +13,19 @@ async function getTeamInfo(userId, gw) {
 }
 
 async function createUserInfo(userId, gw) {
-    const teamInfo = await getTeamInfo(userId,gw)
+    const userInfo = await getUserInfo(userId,gw)
+    console.log(userInfo)
     const userInfoObject = {
-        "total_points": teamInfo.entry_history.total_points,
-        "overall_rank": teamInfo.entry_history.overall_rank,
-        "gameweek_rank": teamInfo.entry_history.rank,
-        "event_transfers": teamInfo.entry_history.event_transfers,
-        "user_teamvalue": teamInfo.entry_history.value,
-        "user_bank": teamInfo.entry_history.bank,
+        "total_points": userInfo.entry_history.total_points,
+        "overall_rank": userInfo.entry_history.overall_rank,
+        "gameweek_rank": userInfo.entry_history.rank,
+        "event_transfers": userInfo.entry_history.event_transfers,
+        "event_transfers_cost": userInfo.entry_history.event_transfers_cost,
+        "user_bank": userInfo.entry_history.bank,
     }
     return userInfoObject;
 }
 
-createUserInfo(2,3)
 async function getCurrentGw() {
   const data = await getGeneralInfo();
   let events = data.events;
@@ -42,7 +42,8 @@ async function getNextGw() {
 
 async function getPicks(userId) {
   const [currentGw] = await getCurrentGw();
-  const user = await getTeamInfo(userId, currentGw);
+  const user = await getUserInfo(userId, currentGw);
+  console.log(user.picks)
   return user.picks; // arr of user team objects
 }
 
@@ -65,10 +66,12 @@ async function getFixtureOfPlayer(playerId, gw) {
   const opponentTeam = teams.find((team) => team.id === playerOpponentTeamId);
   const data = await getGeneralInfo();
   const player = data.elements.find((element) => element.id === playerId);
+  console.log(playerTeam)
+  console.log(player)
   return [
     player,
-    playerTeam.name,
-    opponentTeam.name,
+    playerTeam.short_name,
+    opponentTeam.short_name,
     isHome,
     player.chance_of_playing_next_round,
     player.expected_goals_conceded_per_90
@@ -88,11 +91,10 @@ async function getAllPlayers() {
 
 export {
   getGeneralInfo,
-  getTeamInfo,
+  getUserInfo as getTeamInfo,
   getCurrentGw,
   getNextGw,
   getPicks,
-//   getPlayerInfo,
   getFixtureOfPlayer,
   createUserInfo
 };
