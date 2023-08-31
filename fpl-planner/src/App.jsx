@@ -1,5 +1,5 @@
 import './App.css'
-import { getPicks, getPlayerInfo, getCurrentGw, getFixtureOfPlayer, getNextGw, createUserInfo } from './data/api'
+import { getPicks, getCurrentGw, getFixtureOfPlayer, getNextGw, createUserInfo } from './data/api'
 import React, { useState, useEffect } from 'react';
 
 function App() {
@@ -8,55 +8,40 @@ function App() {
   const [userId, setUserId] = useState('');
   const [userInfo, setUserInfo] = useState({});
 
+
+  useEffect(() => {
+
+    async function loadFixturesOfUserTeam() {
+      const playersPromises = userData.map(async player => await getFixtureOfPlayer(player[0].id, gameWeek));
+      const playersArr = await Promise.all(playersPromises);
+      setUserData(playersArr)
+    }
+    loadFixturesOfUserTeam()
+  }, [gameWeek])
+
   const loadUserInfo = async () => {
     const [currentGw] = await getCurrentGw()
     const userInfo = await createUserInfo(userId, currentGw);
     setUserInfo(userInfo)
   }
 
-  const increaseGameWeek = () => {
+  function increaseGameWeek() {
     setGameWeek(prevGameWeek => prevGameWeek + 1);
-  };
+  }
 
   const decreaseGameWeek = () => {
     setGameWeek(prevGameWeek => prevGameWeek - 1);
-  };
-
-  async function updateUserData() {
-    const updatedUserData = await loadNextFixtures(userData);
-    setUserData(updatedUserData);
-
   }
-
-  async function handleIncreaseBtn() {
-    increaseGameWeek()
-    await updateUserData()
-    console.log(gameWeek)
-  }
-
-  async function handleDecreaseBtn() {
-    decreaseGameWeek()
-    await updateUserData()
-  }
-
-  const loadNextFixtures = async (data) => {
-    const playersPromises = data.map(async player => await getFixtureOfPlayer(player[0].id, gameWeek+1));
-    const playersArr = await Promise.all(playersPromises);
-    console.log(playersArr)
-    return playersArr;
-  }
-
-
 
   const loadTeam = async (userId) => {
-    const userTeam = await getPicks(userId);
-    const userPromises = userTeam.map(player => getPlayerInfo(player.element));
-    const userData = await Promise.all(userPromises);
     const [nextGw] = await getNextGw();
+    const userTeam = await getPicks(userId);
+    const userPromises = userTeam.map(player => getFixtureOfPlayer(player.element, nextGw ));
+    const userData = await Promise.all(userPromises);
     console.log(nextGw)
-    setUserData(userData);
-    setGameWeek(nextGw) 
-  };
+    setUserData(prevUserData => prevUserData = userData);
+    setGameWeek(prevGameWeek => prevGameWeek = nextGw) 
+  }
   
 
   return (
@@ -78,18 +63,18 @@ function App() {
         </button>
       </form>
       <button
-      onClick={handleDecreaseBtn}
+      onClick={decreaseGameWeek}
       >-</button>
       <h1>{gameWeek}</h1>
       <button
-      onClick={handleIncreaseBtn}
+      onClick={increaseGameWeek}
 
       >+</button>
 <div>{userInfo.total_points} - {userInfo.overall_rank} </div>
       <ul>
         {userData.map(player => (
           <li key={player[0].id}>
-            {player[0].web_name} - {player[1]} - {player[2]} - {player[3]}, {player[4]}
+            {player[0].web_name} - {player[1]} - {player[2]} - {player[3]}, {player[5]}
           </li>
         ))}
       </ul>

@@ -60,8 +60,8 @@ async function getFixtureOfPlayer(playerId, gw) {
     : fixtureOfPlayer.team_a;
   const playerTeam = teams.find((team) => team.id === playerTeamId);
   const [playerOpponentTeamId, isHome] = fixtureOfPlayer.is_home
-    ? [fixtureOfPlayer.team_a, "A"]
-    : [fixtureOfPlayer.team_h, "H"];
+    ? [fixtureOfPlayer.team_a, "H"]
+    : [fixtureOfPlayer.team_h, "A"];
   const opponentTeam = teams.find((team) => team.id === playerOpponentTeamId);
   const data = await getGeneralInfo();
   const player = data.elements.find((element) => element.id === playerId);
@@ -71,42 +71,8 @@ async function getFixtureOfPlayer(playerId, gw) {
     opponentTeam.name,
     isHome,
     player.chance_of_playing_next_round,
+    player.expected_goals_conceded_per_90
   ];
-}
-
-async function getPlayerInfo(playerId) {
-  const response = await fetch(
-    `https://fantasy.premierleague.com/api/element-summary/${playerId}/`
-  );
-  const playerFixtures = await response.json();
-  const [nextFixture] = playerFixtures.fixtures;
-  const playerTeamId = nextFixture.is_home
-    ? nextFixture.team_h
-    : nextFixture.team_a;
-  const [playerNextFixtureTeamId, isHome] = nextFixture.is_home
-    ? [nextFixture.team_a, "A"]
-    : [nextFixture.team_h, "H"];
-  const teams = await getAllTeams();
-  const playerTeam = teams.find((team) => team.id === playerTeamId);
-  const opponentTeam = teams.find(
-    (team) => team.id === playerNextFixtureTeamId
-  );
-  const data = await getGeneralInfo();
-  const player = data.elements.find((element) => element.id === playerId);
-  return [
-    player,
-    playerTeam.name,
-    opponentTeam.name,
-    isHome,
-    player.chance_of_playing_next_round,
-  ];
-}
-
-async function loadTeam(userId) {
-  const team = await getPicks(userId);
-  team.forEach((element) => {
-    getPlayerInfo(element.element);
-  });
 }
 
 async function getAllTeams() {
@@ -126,7 +92,7 @@ export {
   getCurrentGw,
   getNextGw,
   getPicks,
-  getPlayerInfo,
+//   getPlayerInfo,
   getFixtureOfPlayer,
   createUserInfo
 };
