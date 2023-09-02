@@ -40,3 +40,15 @@
 .read-the-docs {
   color: #888;
 }
+
+.pitch {
+  background-image: url('pitch.png');
+  background-repeat: no-repeat;
+  display: grid;
+  grid-template-columns: 5;
+  grid-template-rows: 5;
+}
+
+.pitch ul {
+  display: flex;
+}

@@ -13,17 +13,16 @@ async function getUserInfo(userId, gw) {
 }
 
 async function createUserInfo(userId, gw) {
-    const userInfo = await getUserInfo(userId,gw)
-    console.log(userInfo)
-    const userInfoObject = {
-        "total_points": userInfo.entry_history.total_points,
-        "overall_rank": userInfo.entry_history.overall_rank,
-        "gameweek_rank": userInfo.entry_history.rank,
-        "event_transfers": userInfo.entry_history.event_transfers,
-        "event_transfers_cost": userInfo.entry_history.event_transfers_cost,
-        "user_bank": userInfo.entry_history.bank,
-    }
-    return userInfoObject;
+  const userInfo = await getUserInfo(userId, gw);
+  const userInfoObject = {
+    total_points: userInfo.entry_history.total_points,
+    overall_rank: userInfo.entry_history.overall_rank,
+    gameweek_rank: userInfo.entry_history.rank,
+    event_transfers: userInfo.entry_history.event_transfers,
+    event_transfers_cost: userInfo.entry_history.event_transfers_cost,
+    user_bank: userInfo.entry_history.bank,
+  };
+  return userInfoObject;
 }
 
 async function getCurrentGw() {
@@ -43,11 +42,10 @@ async function getNextGw() {
 async function getPicks(userId) {
   const [currentGw] = await getCurrentGw();
   const user = await getUserInfo(userId, currentGw);
-  console.log(user.picks)
   return user.picks; // arr of user team objects
 }
 
-async function getFixtureOfPlayer(playerId, gw) {
+async function getPlayerData(playerId, gw, pickOrder) {
   const response = await fetch(
     `https://fantasy.premierleague.com/api/element-summary/${playerId}/`
   );
@@ -66,16 +64,31 @@ async function getFixtureOfPlayer(playerId, gw) {
   const opponentTeam = teams.find((team) => team.id === playerOpponentTeamId);
   const data = await getGeneralInfo();
   const player = data.elements.find((element) => element.id === playerId);
-  console.log(playerTeam)
-  console.log(player)
-  return [
-    player,
-    playerTeam.short_name,
-    opponentTeam.short_name,
-    isHome,
-    player.chance_of_playing_next_round,
-    player.expected_goals_conceded_per_90
-  ];
+  const position =
+  player.element_type === 1
+    ? "GK"
+    : player.element_type === 2
+    ? "DEF"
+    : player.element_type === 3
+    ? "MID"
+    : player.element_type === 4
+    ? "FWD"
+    : "Unknown";
+
+  const playerObj = {
+    playerData: player,
+    playerTeam: playerTeam.short_name,
+    playerPosition: position,
+    pickOrder: pickOrder,
+    playerNextFixtureOpponentTeam: opponentTeam.short_name,
+    playerNextFixtureLocation: isHome,
+    chanceOfPlayingNextRound: player.chance_of_playing_next_round,
+    expectedGoalsConcededPer90: player.expected_goals_conceded_per_90,
+  };
+
+  console.log(playerObj);
+
+  return playerObj;
 }
 
 async function getAllTeams() {
@@ -91,10 +104,10 @@ async function getAllPlayers() {
 
 export {
   getGeneralInfo,
-  getUserInfo as getTeamInfo,
+  getUserInfo,
   getCurrentGw,
   getNextGw,
   getPicks,
-  getFixtureOfPlayer,
-  createUserInfo
+  getPlayerData,
+  createUserInfo,
 };
