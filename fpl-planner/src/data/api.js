@@ -54,6 +54,7 @@ async function getPlayerData(playerId, gw, pickOrder) {
   const fixtureOfPlayer = playerFixtures.fixtures.find(
     (fixture) => fixture.event === gw
   );
+  console.log(fixtureOfPlayer)
   const playerTeamId = fixtureOfPlayer.is_home
     ? fixtureOfPlayer.team_h
     : fixtureOfPlayer.team_a;
@@ -80,14 +81,13 @@ async function getPlayerData(playerId, gw, pickOrder) {
     playerTeam: playerTeam.short_name,
     playerPosition: position,
     pickOrder: pickOrder,
+    playerFixtures: playerFixtures,
+    nextFixtureDifficulty: fixtureOfPlayer.difficulty,
     playerNextFixtureOpponentTeam: opponentTeam.short_name,
     playerNextFixtureLocation: isHome,
     chanceOfPlayingNextRound: player.chance_of_playing_next_round,
     expectedGoalsConcededPer90: player.expected_goals_conceded_per_90,
   };
-
-  console.log(playerObj);
-
   return playerObj;
 }
 

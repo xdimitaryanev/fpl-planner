@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -41,14 +42,22 @@
   color: #888;
 }
 
-.pitch {
-  background-image: url('pitch.png');
-  background-repeat: no-repeat;
+.pitch__wrapper {
   display: grid;
-  grid-template-columns: 5;
-  grid-template-rows: 5;
+  grid-template-rows: repeat(5, 120px);
+  justify-content: center;
+  align-items: center;
 }
 
-.pitch ul {
+.pitch__wrapper section {
   display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+#player {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

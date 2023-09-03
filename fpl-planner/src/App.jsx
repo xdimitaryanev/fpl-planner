@@ -17,13 +17,18 @@ function App() {
   useEffect(() => {
     async function loadFixturesOfUserTeam() {
       const playersPromises = userData.map(
-        async (player) => await getPlayerData(player.playerData.id, gameWeek)
+        async (player) => await getPlayerData(player.playerData.id, gameWeek, player.pickOrder)
       );
       const playersArr = await Promise.all(playersPromises);
       setUserData(playersArr);
     }
     loadFixturesOfUserTeam();
   }, [gameWeek]);
+
+  const setDifficultyColor = (fixtureDifficulty) => {
+    const color = fixtureDifficulty === 3 ? "red" : undefined
+    return {backgroundColor: color}
+  }
 
   const loadUserInfo = async () => {
     const [currentGw] = await getCurrentGw();
@@ -42,7 +47,6 @@ function App() {
   const loadTeam = async (userId) => {
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
-    console.log(userTeam);
     const userPromises = userTeam.map((player) =>
       getPlayerData(player.element, nextGw, player.position)
     );
@@ -80,24 +84,13 @@ function App() {
         {userInfo.event_transfers} - {userInfo.gameweek_rank} -
         {userInfo.user_bank} - {userInfo.event_transfers_cost} -{" "}
       </div>
-      <div className="pitch">
-        <ul>
-          {userData.map((player) => (
-            <li
-            className={
-              player.playerData.element_type === 1 && player.pickOrder === 1
-                ? "gk"
-                : player.playerData.element_type === 2 &&
-                  player.pickOrder <= 11
-                ? "def"
-                : player.playerData.element_type === 3 &&
-                  player.pickOrder <= 11
-                ? "mid"
-                : player.playerData.element_type === 4 &&
-                  player.pickOrder <= 11
-                ? "fwd"
-                : "sub"
-            }
+      <div className="pitch__wrapper">
+      {/* <img className="pitch__img"  src="pitch.png" alt="" /> */}
+
+      <section className="pitch__gk">
+          {userData.filter((player)=> player.playerData.element_type === 1 && player.pickOrder === 1).map((player) => (
+            <div
+              id="player"
               key={player.playerData.id}
             >
               <img
@@ -108,12 +101,105 @@ function App() {
                 }
                 alt=""
               />
-              {player.playerData.web_name} - {player.playerTeam} -{" "}
-              {player.playerNextFixtureOpponentTeam} -{" "}
-              {player.playerNextFixtureLocation}
-            </li>
+              <div style={setDifficultyColor(player.nextFixtureDifficulty)}>
+              <h3>{player.playerData.web_name}</h3>  
+              <h4>{player.playerNextFixtureOpponentTeam} ({player.playerNextFixtureLocation})</h4>   
+              </div>
+            </div>
           ))}
-        </ul>
+        </section>
+
+        <section className="pitch__def">
+          {userData.filter((player)=> player.playerData.element_type === 2 && player.pickOrder <= 11).map((player) => (
+            <div
+              id="player"
+              key={player.playerData.id}
+            >
+              <img
+                src={
+                  player.playerData.element_type === 1
+                    ? `${player.playerTeam}-GK.webp`
+                    : `${player.playerTeam}.webp`
+                }
+                alt=""
+              />
+              <div>
+              <h3>{player.playerData.web_name}</h3>  
+              <h4>{player.playerNextFixtureOpponentTeam} ({player.playerNextFixtureLocation})</h4>   
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="pitch__mid">
+          {userData.filter((player)=> player.playerData.element_type === 3 && player.pickOrder <= 11).map((player) => (
+            <div
+              id="player"
+              key={player.playerData.id}
+            >
+              <img
+                src={
+                  player.playerData.element_type === 1
+                    ? `${player.playerTeam}-GK.webp`
+                    : `${player.playerTeam}.webp`
+                }
+                alt=""
+              />
+              <div>
+              <h3>{player.playerData.web_name}</h3>  
+              <h4>{player.playerNextFixtureOpponentTeam} ({player.playerNextFixtureLocation}) {player.nextFixtureDifficulty}</h4>   
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="pitch__fwd">
+          {userData.filter((player)=> player.playerData.element_type === 4 && player.pickOrder <= 11).map((player) => (
+            <div
+              id="player"
+              key={player.playerData.id}
+            >
+              <img
+                src={
+                  player.playerData.element_type === 1
+                    ? `${player.playerTeam}-GK.webp`
+                    : `${player.playerTeam}.webp`
+                }
+                alt=""
+              />
+              <div>
+              <h3>{player.playerData.web_name}</h3>  
+              <h4>{player.playerNextFixtureOpponentTeam} ({player.playerNextFixtureLocation})</h4>   
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="pitch__sub">
+          {userData.filter((player)=> player.pickOrder > 11).map((player) => (
+            <div
+              id="player"
+              key={player.playerData.id}
+            >
+              <img
+                src={
+                  player.playerData.element_type === 1
+                    ? `${player.playerTeam}-GK.webp`
+                    : `${player.playerTeam}.webp`
+                }
+                alt=""
+              />
+              <div>
+              <h3>{player.playerData.web_name}</h3>  
+              <h4>{player.playerNextFixtureOpponentTeam} ({player.playerNextFixtureLocation}) {player.nextFixtureDifficulty}</h4>   
+              </div>
+
+              
+              
+            </div>
+          ))}
+        </section>
+
       </div>
     </div>
   );
