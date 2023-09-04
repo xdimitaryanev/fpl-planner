@@ -34,8 +34,6 @@ function decreaseGameWeek() {
     setGameWeek((prevGameWeek) => prevGameWeek - 1);
   };
 
-
-
   async function loadUserInfo () {
     const [currentGw] = await getCurrentGw();
     const userInfo = await createUserInfo(userId, currentGw);
@@ -86,31 +84,31 @@ function decreaseGameWeek() {
 
       <section className="pitch__gk">
           {userData.filter((player)=> player.playerData.element_type === 1 && player.pickOrder === 1).map((player) => (
-            <Player player={player} />
+            <Player key={player.playerData.id} player={player} />
           ))}
         </section>
 
         <section className="pitch__def">
           {userData.filter((player)=> player.playerData.element_type === 2 && player.pickOrder <= 11).map((player) => (
-            <Player player={player} />
+            <Player key={player.playerData.id} player={player} />
           ))}
         </section>
 
         <section className="pitch__mid">
           {userData.filter((player)=> player.playerData.element_type === 3 && player.pickOrder <= 11).map((player) => (
-            <Player player={player} />
+            <Player key={player.playerData.id} player={player} />
           ))}
         </section>
 
         <section className="pitch__fwd">
           {userData.filter((player)=> player.playerData.element_type === 4 && player.pickOrder <= 11).map((player) => (
-           <Player player={player} />
+           <Player key={player.playerData.id} player={player} />
           ))}
         </section>
 
         <section className="pitch__sub">
           {userData.filter((player)=> player.pickOrder > 11).map((player) => (
-            <Player player={player} />
+            <Player key={player.playerData.id} player={player} />
           ))}
         </section>
 

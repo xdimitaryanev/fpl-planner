@@ -87,6 +87,7 @@ async function getPlayerData(playerId, gw, pickOrder) {
     chanceOfPlayingNextRound: player.chance_of_playing_next_round,
     expectedGoalsConcededPer90: player.expected_goals_conceded_per_90,
   };
+  console.log(playerObj)
   return playerObj;
 }
 
