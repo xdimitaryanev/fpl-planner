@@ -54,7 +54,6 @@ async function getPlayerData(playerId, gw, pickOrder) {
   const fixtureOfPlayer = playerFixtures.fixtures.find(
     (fixture) => fixture.event === gw
   );
-  console.log(fixtureOfPlayer)
   const playerTeamId = fixtureOfPlayer.is_home
     ? fixtureOfPlayer.team_h
     : fixtureOfPlayer.team_a;
