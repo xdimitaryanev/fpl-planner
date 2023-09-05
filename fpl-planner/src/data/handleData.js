@@ -1,6 +1,5 @@
 import { getUserInfo, getUserTeamInfo, getPlayerData, getGeneralInfo } from "./api";
 
-
 async function createUserInfo(userId, gw) {
     const userInfo = await getUserInfo(userId);
     const userTeamInfo = await getUserTeamInfo(userId, gw);
@@ -48,16 +47,14 @@ async function createUserInfo(userId, gw) {
       : "Unknown";
   
     const playerObj = {
-      playerData: player,
-      playerTeam: playerTeam.short_name,
-      playerPosition: position,
-      pickOrder: pickOrder,
-      playerFixtures: playerFixtures,
-      nextFixtureDifficulty: fixtureOfPlayer.difficulty,
-      playerNextFixtureOpponentTeam: opponentTeam.short_name,
-      playerNextFixtureLocation: isHome,
-      chanceOfPlayingNextRound: player.chance_of_playing_next_round,
-      expectedGoalsConcededPer90: player.expected_goals_conceded_per_90,
+      data: player,
+      team: playerTeam.short_name,
+      position: position,
+      pick_order: pickOrder,
+      fixtures: playerFixtures,
+      next_fixture_difficulty: fixtureOfPlayer.difficulty,
+      next_fixture_opponent_team: opponentTeam.short_name,
+      next_fixture_location: isHome,
     };
     console.log(playerObj)
     return playerObj;

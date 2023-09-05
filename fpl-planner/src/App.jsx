@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     async function loadFixturesOfUserTeam() {
       const playersPromises = userData.map(
-        async (player) => await createPlayerData(player.playerData.id, gameWeek, player.pickOrder)
+        async (player) => await createPlayerData(player.data.id, gameWeek, player.pick_order)
       );
       const playersArr = await Promise.all(playersPromises);
       setUserData(playersArr);
@@ -90,32 +90,32 @@ function decreaseGameWeek() {
       <div className="pitch__wrapper">
 
       <section className="pitch__gk">
-          {userData.filter((player)=> player.playerData.element_type === 1 && player.pickOrder === 1).map((player) => (
-            <Player key={player.playerData.id} player={player} />
+          {userData.filter((player)=> player.data.element_type === 1 && player.pick_order === 1).map((player) => (
+            <Player key={player.data.id} player={player} />
           ))}
         </section>
 
         <section className="pitch__def">
-          {userData.filter((player)=> player.playerData.element_type === 2 && player.pickOrder <= 11).map((player) => (
-            <Player key={player.playerData.id} player={player} />
+          {userData.filter((player)=> player.data.element_type === 2 && player.pick_order <= 11).map((player) => (
+            <Player key={player.data.id} player={player} />
           ))}
         </section>
 
         <section className="pitch__mid">
-          {userData.filter((player)=> player.playerData.element_type === 3 && player.pickOrder <= 11).map((player) => (
-            <Player key={player.playerData.id} player={player} />
+          {userData.filter((player)=> player.data.element_type === 3 && player.pick_order <= 11).map((player) => (
+            <Player key={player.data.id} player={player} />
           ))}
         </section>
 
         <section className="pitch__fwd">
-          {userData.filter((player)=> player.playerData.element_type === 4 && player.pickOrder <= 11).map((player) => (
-           <Player key={player.playerData.id} player={player} />
+          {userData.filter((player)=> player.data.element_type === 4 && player.pick_order <= 11).map((player) => (
+           <Player key={player.data.idd} player={player} />
           ))}
         </section>
 
         <section className="pitch__sub">
-          {userData.filter((player)=> player.pickOrder > 11).map((player) => (
-            <Player key={player.playerData.id} player={player} />
+          {userData.filter((player)=> player.pick_order > 11).map((player) => (
+            <Player key={player.data.id} player={player} />
           ))}
         </section>
 

@@ -19,22 +19,22 @@ const getDifficultyColor = (fixtureDifficulty) => {
 function getXg(player) {
   const xg =
     player.playerPosition === "GK"
-      ? `XGC: ${player.playerData.expected_goals_conceded_per_90}`
-      : player.playerPosition === "DEF" || player.playerPosition === "MID"
-      ? `XGC: ${player.playerData.expected_goals_conceded_per_90} XGI: ${player.playerData.expected_goal_involvements_per_90}`
-      : player.playerPosition === "FWD"
-      ? `XGI: ${player.playerData.expected_goal_involvements_per_90}`
+      ? `XGC: ${player.data.expected_goals_conceded_per_90}`
+      : player.position === "DEF" || player.position === "MID"
+      ? `XGC: ${player.data.expected_goals_conceded_per_90} XGI: ${player.data.expected_goal_involvements_per_90}`
+      : player.position === "FWD"
+      ? `XGI: ${player.data.expected_goal_involvements_per_90}`
       : undefined;
   return xg;
 }
 
 function getPrice(player) {
-    const price = (player.playerData.now_cost/10).toFixed(1);
+    const price = (player.data.now_cost/10).toFixed(1);
     return price;
 }
 
 function getNextFixture(player) {
-    const fixture = `${player.playerNextFixtureOpponentTeam}(${player.playerNextFixtureLocation})`
+    const fixture = `${player.next_fixture_opponent_team}(${player.next_fixture_location})`
     return fixture;
 }
 
@@ -43,19 +43,19 @@ function Player({ player }) {
     <div id="player">
       <img
         src={
-          player.playerData.element_type === 1
-            ? `${player.playerTeam}-GK.webp`
-            : `${player.playerTeam}.webp`
+          player.data.element_type === 1
+            ? `${player.team}-GK.webp`
+            : `${player.team}.webp`
         }
         alt=""
       />
       <div>
         <h3>
-          {player.playerData.web_name} {" "}
+          {player.data.web_name} {" "}
           {getPrice(player)}£ <br />
           {getXg(player)}
         </h3>
-        <h4 style={getDifficultyColor(player.nextFixtureDifficulty)}>
+        <h4 style={getDifficultyColor(player.next_fixture_difficulty)}>
           {getNextFixture(player)}
         </h4>
       </div>
