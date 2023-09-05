@@ -3,7 +3,6 @@ import { getUserInfo, getUserTeamInfo, getPlayerData, getGeneralInfo } from "./a
 async function createUserInfo(userId, gw) {
     const userInfo = await getUserInfo(userId);
     const userTeamInfo = await getUserTeamInfo(userId, gw);
-    console.log(userInfo)
     const userInfoObject = {
       user_name: userInfo.player_first_name,
       user_team_name: userInfo.name,
@@ -19,7 +18,8 @@ async function createUserInfo(userId, gw) {
 
   async function createPlayerData(playerId, gw, pickOrder) {
     const playerFixtures = await getPlayerData(playerId);
-    console.log(playerFixtures.fixtures)    
+    console.log(playerFixtures.fixtures)
+    const fixtureDifficultyIndex = fixtureAnalyzer(5, playerFixtures.fixtures)
     const teams = await getAllTeams();
     const fixtureOfPlayer = playerFixtures.fixtures.find(
       (fixture) => fixture.event === gw
@@ -45,19 +45,33 @@ async function createUserInfo(userId, gw) {
       : player.element_type === 4
       ? "FWD"
       : "Unknown";
-  
+
     const playerObj = {
       data: player,
       team: playerTeam.short_name,
       position: position,
       pick_order: pickOrder,
       fixtures: playerFixtures,
+      fixtures_index: fixtureDifficultyIndex,
       next_fixture_difficulty: fixtureOfPlayer.difficulty,
       next_fixture_opponent_team: opponentTeam.short_name,
       next_fixture_location: isHome,
     };
-    console.log(playerObj)
     return playerObj;
+  }
+
+  function fixtureAnalyzer(numberOfFixtures, fixturesArr) {
+    const arrLength = fixturesArr.length;
+    let totalFixtureDifficulty = 0;
+    if (numberOfFixtures > arrLength) {
+        return;
+    }
+    for(let i = 0; i <= numberOfFixtures; i++) {
+        const fixtureDifficulty = fixturesArr[i].difficulty;
+        totalFixtureDifficulty += fixtureDifficulty;
+    } 
+    const indexDifficulty = totalFixtureDifficulty/numberOfFixtures;
+    return indexDifficulty;
   }
   
   async function getCurrentGw() {

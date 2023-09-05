@@ -18,7 +18,7 @@ const getDifficultyColor = (fixtureDifficulty) => {
 
 function getXg(player) {
   const xg =
-    player.playerPosition === "GK"
+    player.position === "GK"
       ? `XGC: ${player.data.expected_goals_conceded_per_90}`
       : player.position === "DEF" || player.position === "MID"
       ? `XGC: ${player.data.expected_goals_conceded_per_90} XGI: ${player.data.expected_goal_involvements_per_90}`
@@ -53,7 +53,9 @@ function Player({ player }) {
         <h3>
           {player.data.web_name} {" "}
           {getPrice(player)}£ <br />
-          {getXg(player)}
+          {getXg(player)} <br />
+          {player.fixtures_index}
+     
         </h3>
         <h4 style={getDifficultyColor(player.next_fixture_difficulty)}>
           {getNextFixture(player)}

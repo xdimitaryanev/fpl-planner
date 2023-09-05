@@ -109,7 +109,7 @@ function decreaseGameWeek() {
 
         <section className="pitch__fwd">
           {userData.filter((player)=> player.data.element_type === 4 && player.pick_order <= 11).map((player) => (
-           <Player key={player.data.idd} player={player} />
+           <Player key={player.data.id} player={player} />
           ))}
         </section>
 
