@@ -51,7 +51,7 @@ function Player({ player }) {
       />
       <div>
         <h3>
-          {player.playerData.web_name}
+          {player.playerData.web_name} {" "}
           {getPrice(player)}£ <br />
           {getXg(player)}
         </h3>

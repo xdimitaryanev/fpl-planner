@@ -1,11 +1,17 @@
 import "./App.css";
 import {
-  getPicks,
-  getCurrentGw,
+  getGeneralInfo,
+  getUserInfo,
+  getUserTeamInfo,
   getPlayerData,
-  getNextGw,
-  createUserInfo,
 } from "./data/api";
+import {createUserInfo,
+  createPlayerData,
+  getCurrentGw,
+  getNextGw,
+  getPicks,
+  getAllTeams,
+  getAllPlayers,} from "./data/handleData";
 import Player from "./Player";
 import React, { useState, useEffect } from "react";
 
@@ -18,7 +24,7 @@ function App() {
   useEffect(() => {
     async function loadFixturesOfUserTeam() {
       const playersPromises = userData.map(
-        async (player) => await getPlayerData(player.playerData.id, gameWeek, player.pickOrder)
+        async (player) => await createPlayerData(player.playerData.id, gameWeek, player.pickOrder)
       );
       const playersArr = await Promise.all(playersPromises);
       setUserData(playersArr);
@@ -45,9 +51,10 @@ function decreaseGameWeek() {
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
     const userPromises = userTeam.map((player) =>
-      getPlayerData(player.element, nextGw, player.position)
+      createPlayerData(player.element, nextGw, player.position)
     );
     const userData = await Promise.all(userPromises);
+    console.log(userData)
     setUserData((prevUserData) => (prevUserData = userData));
     setGameWeek((prevGameWeek) => (prevGameWeek = nextGw));
   };
