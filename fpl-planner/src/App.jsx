@@ -11,7 +11,8 @@ import {createUserInfo,
   getNextGw,
   getPicks,
   getAllTeams,
-  getAllPlayers,} from "./data/handleData";
+  getAllPlayers,
+  getAllPlayersData} from "./data/handleData";
 import Player from "./Player";
 import React, { useState, useEffect } from "react";
 
@@ -48,6 +49,7 @@ function decreaseGameWeek() {
 
 
   const loadTeam = async (userId) => {
+    getAllPlayersData();
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
     const userPromises = userTeam.map((player) =>
@@ -82,9 +84,11 @@ function decreaseGameWeek() {
       <h1>{gameWeek}</h1>
       <button onClick={increaseGameWeek}>+</button>
       <div>
-        {userInfo.total_points} - {userInfo.overall_rank} -{" "}
-        {userInfo.event_transfers} - {userInfo.gameweek_rank} -
-        {userInfo.user_bank} - {userInfo.event_transfers_cost} -{" "}
+        Hello, {userInfo.name} {""}
+        Total Points: {userInfo.total_points} - Overall Rank: {userInfo.overall_rank} -{" "}
+        Gameweek {gameWeek-1} Rank: {userInfo.gameweek_rank} -
+        Money Remaining: {userInfo.bank}£ {""}
+        {userInfo.team_name}
       </div>
       <div className="pitch__wrapper">
 
