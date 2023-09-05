@@ -54,7 +54,6 @@ function decreaseGameWeek() {
       createPlayerData(player.element, nextGw, player.position)
     );
     const userData = await Promise.all(userPromises);
-    console.log(userData)
     setUserData((prevUserData) => (prevUserData = userData));
     setGameWeek((prevGameWeek) => (prevGameWeek = nextGw));
   };
