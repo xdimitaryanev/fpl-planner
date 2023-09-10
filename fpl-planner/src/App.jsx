@@ -13,6 +13,7 @@ import {createUserInfo,
   getAllTeams,
   getAllPlayers,
   getAllPlayersData} from "./data/handleData";
+  import PlayersList from "./PlayersList";
 import Player from "./Player";
 import React, { useState, useEffect } from "react";
 
@@ -21,6 +22,7 @@ function App() {
   const [gameWeek, setGameWeek] = useState("");
   const [userId, setUserId] = useState("");
   const [userInfo, setUserInfo] = useState({});
+  const [currentGw, setCurrentGw] = useState(null);
 
   useEffect(() => {
     async function loadFixturesOfUserTeam() {
@@ -33,6 +35,13 @@ function App() {
     loadFixturesOfUserTeam();
   }, [gameWeek]);
 
+  useEffect(()=> {
+    async function fetchCurrentGw() {
+      const [nextGw] = await getNextGw()
+      setCurrentGw(nextGw);
+    } fetchCurrentGw()
+  },[])
+
   function increaseGameWeek() {
     setGameWeek((prevGameWeek) => prevGameWeek + 1);
   }
@@ -40,6 +49,22 @@ function App() {
 function decreaseGameWeek() {
     setGameWeek((prevGameWeek) => prevGameWeek - 1);
   };
+
+function renderBtns() {
+  console.log(gameWeek, currentGw)
+  const isPrevBtnVisible = gameWeek === currentGw;
+  console.log(isPrevBtnVisible)
+  const isNextBtnVisible = gameWeek < 38;
+  console.log(isNextBtnVisible)
+
+  return (
+      <div>
+        {isPrevBtnVisible ? null : (<button onClick={decreaseGameWeek}>PREV</button>)}
+        {isNextBtnVisible ? (<button onClick={increaseGameWeek}>NEXT</button>) : null}
+      </div>
+    );
+  };
+
 
   async function loadUserInfo () {
     const [currentGw] = await getCurrentGw();
@@ -69,6 +94,8 @@ function decreaseGameWeek() {
           onChange={(e) => setUserId(e.target.value)}
           type="number"
           id="teamId"
+          placeholder="Enter your team ID here!"
+          autoFocus="autofocus"
         />
         <button
           onClick={(e) => {
@@ -80,15 +107,17 @@ function decreaseGameWeek() {
           Load
         </button>
       </form>
-      <button onClick={decreaseGameWeek}>-</button>
+
       <h1>{gameWeek}</h1>
-      <button onClick={increaseGameWeek}>+</button>
+      {renderBtns()}
       <div>
-        Hello, {userInfo.name} {""}
-        Total Points: {userInfo.total_points} - Overall Rank: {userInfo.overall_rank} -{" "}
+        <h2>Hello, {userInfo.name}</h2> {""}
+        <h3>Total Points: {userInfo.total_points}</h3>
+        <h4>Overall Rank: {userInfo.overall_rank}</h4>
+        {/* {" "}
         Gameweek {gameWeek-1} Rank: {userInfo.gameweek_rank} -
         Money Remaining: {userInfo.bank}£ {""}
-        {userInfo.team_name}
+        {userInfo.team_name} */}
       </div>
       <div className="pitch__wrapper">
 
@@ -123,6 +152,7 @@ function decreaseGameWeek() {
         </section>
 
       </div>
+
     </div>
   );
 }
