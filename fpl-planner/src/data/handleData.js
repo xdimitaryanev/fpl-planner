@@ -79,10 +79,10 @@ async function createUserInfo(userId, gw) {
   
     const position = getPositionOfPlayer(player);
 
-      const fixtureOfPlayer = playerFixtures.fixtures.find(
+      const fixtureOfPlayer = playerFixtures.fixtures.filter(
         (fixture) => fixture.event === gw
       ); 
-      if (fixtureOfPlayer === undefined) {
+      if (fixtureOfPlayer.length < 1) {
           return {
             data: player,
             team: playerTeam,
@@ -90,28 +90,62 @@ async function createUserInfo(userId, gw) {
             pick_order: pickOrder,
             fixtures: playerFixtures,
             fixtures_index: fixtureDifficultyIndex,
+            is_next_fixture_blank: true,
+            is_next_fixture_double: false,
             next_fixture_difficulty: "-",
             next_fixture_opponent_team: "-",
             next_fixture_location: "-",
           };
-      }
-      const [playerOpponentTeamId, isHome] = fixtureOfPlayer.is_home
-        ? [fixtureOfPlayer.team_a, "H"]
-        : [fixtureOfPlayer.team_h, "A"];
+      } else if(fixtureOfPlayer.length === 1) {
+        const [playerOpponentTeamId, location] = fixtureOfPlayer[0].is_home
+        ? [fixtureOfPlayer[0].team_a, "H"]
+        : [fixtureOfPlayer[0].team_h, "A"];
       const opponentTeam = teams.find((team) => team.id === playerOpponentTeamId);
 
-    const playerObj = {
+       return {
       data: player,
       team: playerTeam,
       position: position,
       pick_order: pickOrder,
       fixtures: playerFixtures,
       fixtures_index: fixtureDifficultyIndex,
-      next_fixture_difficulty: fixtureOfPlayer.difficulty,
+      is_next_fixture_blank: false,
+      is_next_fixture_double: false,
+      next_fixture_difficulty: fixtureOfPlayer[0].difficulty,
       next_fixture_opponent_team: opponentTeam.short_name,
-      next_fixture_location: isHome,
+      next_fixture_location: location,
     };
-    return playerObj;
+
+      } else if(fixtureOfPlayer.length === 2) {
+
+
+const locations = [];
+const opponentsTeam = [];
+fixtureOfPlayer.forEach(fixture => {
+  const [playerOpponentTeamId, location] = fixture.is_home
+  ? [fixture.team_a, "H"]
+  : [fixture.team_h, "A"];
+const opponentTeam = teams.find((team) => team.id === playerOpponentTeamId);
+opponentsTeam.push(opponentTeam)
+locations.push(location)
+});
+console.log(opponentsTeam, locations)
+        return {
+          data: player,
+          team: playerTeam,
+          position: position,
+          pick_order: pickOrder,
+          fixtures: playerFixtures,
+          fixtures_index: fixtureDifficultyIndex,
+          is_next_fixture_blank: false,
+          is_next_fixture_double: true,
+          next_fixture_difficulty: [fixtureOfPlayer[0].difficulty, fixtureOfPlayer[1].difficulty],
+          next_fixture_opponent_team: [opponentsTeam[0].short_name, opponentsTeam[1].short_name,],
+          next_fixture_location: [locations[0], locations[1]],
+        };
+
+
+      }
   }
 
   async function getAllPlayersData() {

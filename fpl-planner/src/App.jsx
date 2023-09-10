@@ -23,6 +23,7 @@ function App() {
   const [userId, setUserId] = useState("");
   const [userInfo, setUserInfo] = useState({});
   const [currentGw, setCurrentGw] = useState(null);
+  const [isLoadBtnClicked, setIsLoadBtnClicked] = useState(false)
 
   useEffect(() => {
     async function loadFixturesOfUserTeam() {
@@ -30,6 +31,7 @@ function App() {
         async (player) => await createPlayerData(player.data.id, gameWeek, player.pick_order)
       );
       const playersArr = await Promise.all(playersPromises);
+      console.log(playersArr)
       setUserData(playersArr);
     }
     loadFixturesOfUserTeam();
@@ -65,6 +67,16 @@ function renderBtns() {
     );
   };
 
+  function renderUserInfo() {
+    return (
+      <>
+        <h2>Hello, {userInfo.name}</h2> {""}
+        <h3>Total Points: {userInfo.total_points}</h3>
+        <h4>Overall Rank: {userInfo.overall_rank}</h4>
+      </>
+    )
+  }
+
 
   async function loadUserInfo () {
     const [currentGw] = await getCurrentGw();
@@ -74,6 +86,7 @@ function renderBtns() {
 
 
   const loadTeam = async (userId) => {
+    
     getAllPlayersData();
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
@@ -83,6 +96,7 @@ function renderBtns() {
     const userData = await Promise.all(userPromises);
     setUserData((prevUserData) => (prevUserData = userData));
     setGameWeek((prevGameWeek) => (prevGameWeek = nextGw));
+    setIsLoadBtnClicked(true)
   };
 
   return (
@@ -109,11 +123,10 @@ function renderBtns() {
       </form>
 
       <h1>{gameWeek}</h1>
-      {renderBtns()}
+      {isLoadBtnClicked ? renderBtns() : null}
       <div>
-        <h2>Hello, {userInfo.name}</h2> {""}
-        <h3>Total Points: {userInfo.total_points}</h3>
-        <h4>Overall Rank: {userInfo.overall_rank}</h4>
+        {isLoadBtnClicked ? renderUserInfo() : null}
+
         {/* {" "}
         Gameweek {gameWeek-1} Rank: {userInfo.gameweek_rank} -
         Money Remaining: {userInfo.bank}£ {""}

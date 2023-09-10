@@ -29,13 +29,29 @@ function getXg(player) {
 }
 
 function getPrice(player) {
-    const price = (player.data.now_cost/10).toFixed(1);
-    return price;
+  const price = (player.data.now_cost / 10).toFixed(1);
+  return price;
 }
 
 function getNextFixture(player) {
-    const fixture = `${player.next_fixture_opponent_team}(${player.next_fixture_location})`
-    return fixture;
+  console.log(player);
+  const fixture = player.is_next_fixture_double ? (
+    <div>
+      <h3 style={getDifficultyColor(player.next_fixture_difficulty[0])}>
+        {player.next_fixture_opponent_team[0]}({player.next_fixture_location[0]}
+        )
+      </h3>
+      <h3 style={getDifficultyColor(player.next_fixture_difficulty[0])}>
+        {player.next_fixture_opponent_team[1]}({player.next_fixture_location[1]}
+        )
+      </h3>
+    </div>
+  ) : (
+    <h3 style={getDifficultyColor(player.next_fixture_difficulty)}>
+      {player.next_fixture_opponent_team}({player.next_fixture_location})
+    </h3>
+  );
+  return fixture;
 }
 
 function Player({ player }) {
@@ -51,15 +67,12 @@ function Player({ player }) {
       />
       <div>
         <h3>
-          {player.data.web_name} {" "}
-          {getPrice(player)}£ <br />
+          {player.data.web_name} {getPrice(player)}£ <br />
           {getXg(player)} <br />
           {player.fixtures_index}
-     
         </h3>
-        <h4 style={getDifficultyColor(player.next_fixture_difficulty)}>
-          {getNextFixture(player)}
-        </h4>
+
+        {getNextFixture(player)}
       </div>
     </div>
   );
