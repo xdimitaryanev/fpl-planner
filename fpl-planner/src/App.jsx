@@ -28,10 +28,9 @@ function App() {
   useEffect(() => {
     async function loadFixturesOfUserTeam() {
       const playersPromises = userData.map(
-        async (player) => await createPlayerData(player.data.id, gameWeek, player.pick_order)
+        async (player) => await createPlayerData(player.data.id, gameWeek, player.pick_order, player.is_captain, player.is_vice_captain)
       );
       const playersArr = await Promise.all(playersPromises);
-      console.log(playersArr)
       setUserData(playersArr);
     }
     loadFixturesOfUserTeam();
@@ -53,11 +52,8 @@ function decreaseGameWeek() {
   };
 
 function renderBtns() {
-  console.log(gameWeek, currentGw)
   const isPrevBtnVisible = gameWeek === currentGw;
-  console.log(isPrevBtnVisible)
   const isNextBtnVisible = gameWeek < 38;
-  console.log(isNextBtnVisible)
 
   return (
       <div>
@@ -90,13 +86,17 @@ function renderBtns() {
     getAllPlayersData();
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
+
     const userPromises = userTeam.map((player) =>
-      createPlayerData(player.element, nextGw, player.position)
+      
+      createPlayerData(player.element, nextGw, player.position, player.is_captain, player.is_vice_captain)
+      
     );
     const userData = await Promise.all(userPromises);
     setUserData((prevUserData) => (prevUserData = userData));
     setGameWeek((prevGameWeek) => (prevGameWeek = nextGw));
     setIsLoadBtnClicked(true)
+
   };
 
   return (

@@ -67,14 +67,14 @@ async function createUserInfo(userId, gw) {
     return userInfoObject;
   }
 
-  async function createPlayerData(playerId, gw, pickOrder) {
+  async function createPlayerData(playerId, gw, pickOrder, isCaptain, isViceCaptain) {
     const playerFixtures = await getPlayerData(playerId);
     const fixtureDifficultyIndex = fixtureAnalyzer(gw, 5, playerFixtures.fixtures)
     const teams = await getAllTeams();
 
     const data = await getGeneralInfo();
     const player = data.elements.find((element) => element.id === playerId);
-
+console.log(player)
     const playerTeam = getTeamFromTeamId(player.team, teams);
   
     const position = getPositionOfPlayer(player);
@@ -88,6 +88,8 @@ async function createUserInfo(userId, gw) {
             team: playerTeam,
             position: position,
             pick_order: pickOrder,
+            is_captain: isCaptain,
+            is_vice_captain: isViceCaptain,
             fixtures: playerFixtures,
             fixtures_index: fixtureDifficultyIndex,
             is_next_fixture_blank: true,
@@ -107,6 +109,8 @@ async function createUserInfo(userId, gw) {
       team: playerTeam,
       position: position,
       pick_order: pickOrder,
+      is_captain: isCaptain,
+      is_vice_captain: isViceCaptain,
       fixtures: playerFixtures,
       fixtures_index: fixtureDifficultyIndex,
       is_next_fixture_blank: false,
@@ -129,12 +133,13 @@ const opponentTeam = teams.find((team) => team.id === playerOpponentTeamId);
 opponentsTeam.push(opponentTeam)
 locations.push(location)
 });
-console.log(opponentsTeam, locations)
         return {
           data: player,
           team: playerTeam,
           position: position,
           pick_order: pickOrder,
+          is_captain: isCaptain,
+          is_vice_captain: isViceCaptain,
           fixtures: playerFixtures,
           fixtures_index: fixtureDifficultyIndex,
           is_next_fixture_blank: false,
@@ -158,7 +163,7 @@ console.log(opponentsTeam, locations)
             position: getPositionOfPlayer(player),
         }
     } )
-    console.log(allPlayersData)
+
     return allPlayersData;
   }
 

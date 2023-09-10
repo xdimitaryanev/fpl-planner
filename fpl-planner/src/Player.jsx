@@ -34,7 +34,6 @@ function getPrice(player) {
 }
 
 function getNextFixture(player) {
-  console.log(player);
   const fixture = player.is_next_fixture_double ? (
     <div>
       <h3 style={getDifficultyColor(player.next_fixture_difficulty[0])}>
@@ -65,6 +64,12 @@ function Player({ player }) {
         }
         alt=""
       />
+      <img 
+      className="captain__img"
+      src={
+        player.is_captain ?
+        `circle.png` : player.is_vice_captain ? `circle.png` : null
+      } alt="" />
       <div>
         <h3>
           {player.data.web_name} {getPrice(player)}£ <br />
