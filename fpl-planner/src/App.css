@@ -30,6 +30,7 @@ input[type=number] {
   grid-template-rows: repeat(5, 165px);
   justify-content: center;
   align-items: center;
+  gap: 1em;
 }
 
 .pitch__wrapper section {
@@ -38,13 +39,28 @@ input[type=number] {
   gap: 2rem;
 }
 
-#player {
+.player {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.captain__img {
-  width: 5%;
+.player__img {
+  width: 60px;
 }
+
+.player div h3 {
+  font-size: .7em;
+} 
+
+.img__wrapper {
+  display: flex;
+}
+
+.captain__img {
+  width: 17px;
+  position: absolute;
+
+}
+

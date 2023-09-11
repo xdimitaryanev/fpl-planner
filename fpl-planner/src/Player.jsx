@@ -55,8 +55,10 @@ function getNextFixture(player) {
 
 function Player({ player }) {
   return (
-    <div id="player">
+    <div className="player">
+      <div className="img__wrapper">
       <img
+      className="player__img"
         src={
           player.data.element_type === 1
             ? `${player.team}-GK.webp`
@@ -64,12 +66,18 @@ function Player({ player }) {
         }
         alt=""
       />
-      <img 
-      className="captain__img"
-      src={
-        player.is_captain ?
-        `circle.png` : player.is_vice_captain ? `circle.png` : null
-      } alt="" />
+      <img
+        className="captain__img"
+        src={
+          player.is_captain
+            ? `circleC.png`
+            : player.is_vice_captain
+            ? `circleV.png`
+            : null
+        }
+        alt=""
+      />
+      </div>
       <div>
         <h3>
           {player.data.web_name} {getPrice(player)}£ <br />
