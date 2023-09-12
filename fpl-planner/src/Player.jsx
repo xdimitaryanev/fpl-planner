@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const getDifficultyColor = (fixtureDifficulty) => {
   const color =
@@ -54,39 +54,71 @@ function getNextFixture(player) {
 }
 
 function Player({ player }) {
+  const [showPlayer, setShowPlayer] = useState(true);
+  const [addButtons, setAddButtons] = useState(true);
+
+  function hideButtons() {
+    setAddButtons(false);
+  }
+
+  function showButtons() {
+    setAddButtons(true);
+  }
+
+  function hidePlayerData() {
+    setShowPlayer(false);
+    hideButtons();
+  }
+
+  function showPlayerData() {
+    setShowPlayer(true);
+    showButtons();
+  }
+
   return (
     <div className="player">
-      <div className="img__wrapper">
-      <img
-      className="player__img"
-        src={
-          player.data.element_type === 1
-            ? `${player.team}-GK.webp`
-            : `${player.team}.webp`
-        }
-        alt=""
-      />
-      <img
-        className="captain__img"
-        src={
-          player.is_captain
-            ? `circleC.png`
-            : player.is_vice_captain
-            ? `circleV.png`
-            : null
-        }
-        alt=""
-      />
-      </div>
-      <div>
-        <h3>
-          {player.data.web_name} {getPrice(player)}£ <br />
-          {getXg(player)} <br />
-          {player.fixtures_index}
-        </h3>
-
-        {getNextFixture(player)}
-      </div>
+      {showPlayer ? (
+        <div className="img__wrapper">
+          <img
+            className="player__img"
+            src={
+              player.data.element_type === 1
+                ? `${player.team}-GK.webp`
+                : `${player.team}.webp`
+            }
+            alt=""
+          />
+          <img
+            className="captain__img"
+            src={
+              player.is_captain
+                ? `circleC.png`
+                : player.is_vice_captain
+                ? `circleV.png`
+                : null
+            }
+            alt=""
+          />
+          <div>
+            <h3>
+              {player.data.web_name} {getPrice(player)}£ <br />
+              {getXg(player)} <br />
+              {player.fixtures_index}
+            </h3>
+            {getNextFixture(player)}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <button onClick={showPlayerData}>Restore</button>
+        </div>
+      )}
+      {addButtons ? (
+        <div>
+          <button>Substitute</button>
+          <button onClick={hidePlayerData}>Transfer Out</button>
+        </div>
+      ) : null}
     </div>
   );
 }
