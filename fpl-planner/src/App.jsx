@@ -26,6 +26,7 @@ function App() {
   const [userInfo, setUserInfo] = useState({});
   const [currentGw, setCurrentGw] = useState(null);
   const [isLoadBtnClicked, setIsLoadBtnClicked] = useState(false);
+  const [playerPositon, setPlayerPosition] = useState();
 
   useEffect(() => {
     async function loadFixturesOfUserTeam() {
@@ -97,7 +98,6 @@ function App() {
     getAllPlayersData();
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
-
     const userPromises = userTeam.map((player) =>
       createPlayerData(
         player.element,
@@ -112,6 +112,15 @@ function App() {
     setGameWeek(nextGw);
     setIsLoadBtnClicked(true);
   };
+
+  function handleSubClick(player) {
+    setPlayerPosition(player.position);
+  }
+
+  function handleSubstitute(player) {
+    const color = playerPositon === player.position ? "yellow" : "white";
+    return { backgroundColor: color };
+  }
 
   return (
     <div className="App">
@@ -137,7 +146,7 @@ function App() {
       </form>
 
       <h1>{gameWeek}</h1>
- 
+
       <div>
         {isLoadBtnClicked ? renderUserInfo() : null}
 
@@ -155,7 +164,13 @@ function App() {
                 player.data.element_type === 1 && player.pick_order === 1
             )
             .map((player) => (
-              <Player key={player.data.id} player={player} />
+              <div key={player.data.id} style={handleSubstitute(player)}>
+                {" "}
+                <Player player={player} />
+                <button onClick={() => handleSubClick(player)}>
+                  Substitute
+                </button>
+              </div>
             ))}
         </section>
 
@@ -166,7 +181,13 @@ function App() {
                 player.data.element_type === 2 && player.pick_order <= 11
             )
             .map((player) => (
-              <Player key={player.data.id} player={player} />
+              <div key={player.data.id} style={handleSubstitute(player)}>
+                {" "}
+                <Player player={player} />
+                <button onClick={() => setPlayerPosition(player.position)}>
+                  Substitute
+                </button>
+              </div>
             ))}
         </section>
 
@@ -177,7 +198,13 @@ function App() {
                 player.data.element_type === 3 && player.pick_order <= 11
             )
             .map((player) => (
-              <Player key={player.data.id} player={player} />
+              <div key={player.data.id} style={handleSubstitute(player)}>
+                {" "}
+                <Player player={player} />
+                <button onClick={() => setPlayerPosition(player.position)}>
+                  Substitute
+                </button>
+              </div>
             ))}
         </section>
 
@@ -188,7 +215,13 @@ function App() {
                 player.data.element_type === 4 && player.pick_order <= 11
             )
             .map((player) => (
-              <Player key={player.data.id} player={player} />
+              <div key={player.data.id} style={handleSubstitute(player)}>
+                {" "}
+                <Player player={player} />
+                <button onClick={() => setPlayerPosition(player.position)}>
+                  Substitute
+                </button>
+              </div>
             ))}
         </section>
 
@@ -196,7 +229,13 @@ function App() {
           {userData
             .filter((player) => player.pick_order > 11)
             .map((player) => (
-              <Player key={player.data.id} player={player} />
+              <div key={player.data.id} style={handleSubstitute(player)}>
+                {" "}
+                <Player player={player} />
+                <button onClick={() => setPlayerPosition(player.position)}>
+                  Substitute
+                </button>
+              </div>
             ))}
         </section>
       </div>

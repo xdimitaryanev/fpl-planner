@@ -89,7 +89,6 @@ async function createPlayerData(
 
   const data = await getGeneralInfo();
   const player = data.elements.find((element) => element.id === playerId);
-  console.log(player);
   const playerTeam = getTeamFromTeamId(player.team, teams);
 
   const position = getPositionOfPlayer(player);
