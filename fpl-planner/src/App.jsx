@@ -31,8 +31,10 @@ function App() {
 
   const [selectedPositionOption, setSelectedPositionOption] = useState("all");
 
-  {/* FETCH USER AND PLAYERS DATA */}
-  useEffect(() => { 
+  {
+    /* FETCH USER AND PLAYERS DATA */
+  }
+  useEffect(() => {
     async function loadFixturesOfUserTeam() {
       const playersPromises = userData.map(
         async (player) =>
@@ -55,18 +57,22 @@ function App() {
     fetchCurrentGw();
   }, [gameWeek]);
 
+  {
+    /* HANDLE GAMEWEEK NAVIGATION */
+  }
 
-  {/* HANDLE GAMEWEEK NAVIGATION */}
-
-  function increaseGameWeek() {     // GW++
+  function increaseGameWeek() {
+    // GW++
     setGameWeek((prevGameWeek) => prevGameWeek + 1);
   }
 
-  function decreaseGameWeek() {     // GW--
-    setGameWeek((prevGameWeek) => prevGameWeek - 1);   
+  function decreaseGameWeek() {
+    // GW--
+    setGameWeek((prevGameWeek) => prevGameWeek - 1);
   }
 
-  function renderBtns() {     // RENDER GAMEWEEK NAV CONDITIONALLY
+  function renderBtns() {
+    // RENDER GAMEWEEK NAV CONDITIONALLY
     const isPrevBtnVisible = gameWeek === currentGw;
     const isNextBtnVisible = gameWeek < 38;
 
@@ -82,14 +88,18 @@ function App() {
     );
   }
 
-  {/* HANDLE USER INFO */}
-  async function loadUserInfo() {     // FETCH USER INFO
+  {
+    /* HANDLE USER INFO */
+  }
+  async function loadUserInfo() {
+    // FETCH USER INFO
     const [currentGw] = await getCurrentGw();
     const userInfo = await createUserInfo(userId, currentGw);
     setUserInfo(userInfo);
   }
 
-  function renderUserInfo() {     // RENDER USER INFO
+  function renderUserInfo() {
+    // RENDER USER INFO
     return (
       <>
         <h2>Hello, {userInfo.name}</h2> {""}
@@ -99,11 +109,9 @@ function App() {
     );
   }
 
-
-
-
-
-  {/* INITIALIZE THE APP ON LOAD BUTTON CLICK */}
+  {
+    /* INITIALIZE THE APP ON LOAD BUTTON CLICK */
+  }
   const loadTeam = async (userId) => {
     getAllPlayersData();
     const [nextGw] = await getNextGw();
@@ -137,8 +145,6 @@ function App() {
     return { backgroundColor: color };
   }
 
-
-
   return (
     <div className="App">
       <form className="input-form">
@@ -164,133 +170,118 @@ function App() {
 
       <h1>{gameWeek}</h1>
 
-      <div>
-        {isLoadBtnClicked ? renderUserInfo() : null}
-      </div>
+      <div>{isLoadBtnClicked ? renderUserInfo() : null}</div>
       {isLoadBtnClicked ? renderBtns() : null}
 
-<div className="app__wrapper"
-> 
-      {/* RENDER PITCH */}
-      <div className="pitch__wrapper">
+      <div className="app__wrapper">
+        {/* RENDER PITCH */}
+        <div className="pitch__wrapper">
+          {/* RENDER GOALKEEPER SECTION */}
+          <section className="pitch__gk">
+            {userData
+              .filter(
+                (player) =>
+                  player.data.element_type === 1 && player.pick_order === 1
+              )
+              .map((player) => (
+                <div key={player.data.id} style={handleSubstitute(player)}>
+                  {" "}
+                  <Player
+                    player={player}
+                    selectedPositionOption={selectedPositionOption}
+                    updateSelectedPosition={updateSelectedPosition}
+                    handleSubstituteClick={handleSubstituteClick}
+                  />
+                </div>
+              ))}
+          </section>
 
-        {/* RENDER GOALKEEPER SECTION */}
-        <section className="pitch__gk">
-          {userData
-            .filter(
-              (player) =>
-                player.data.element_type === 1 && player.pick_order === 1
-            )
-            .map((player) => (
-              <div 
-             
-              key={player.data.id} style={handleSubstitute(player)}>
-                {" "}
-                <Player
-                  player={player}
-                  selectedPositionOption={selectedPositionOption}
-                  updateSelectedPosition={updateSelectedPosition}
-                />
-                <button onClick={() => handleSubstituteClick(player)}>
-                  Substitute
-                </button>
-              </div>
-            ))}
-        </section>
+          {/* RENDER DEFENDERS SECTION */}
+          <section className="pitch__def">
+            {userData
+              .filter(
+                (player) =>
+                  player.data.element_type === 2 && player.pick_order <= 11
+              )
+              .map((player) => (
+                <div key={player.data.id} style={handleSubstitute(player)}>
+                  {" "}
+                  <Player
+                    player={player}
+                    selectedPositionOption={selectedPositionOption}
+                    updateSelectedPosition={updateSelectedPosition}
+                    handleSubstituteClick={handleSubstituteClick}
+                  />
+                </div>
+              ))}
+          </section>
 
-        {/* RENDER DEFENDERS SECTION */}
-        <section className="pitch__def">
-          {userData
-            .filter(
-              (player) =>
-                player.data.element_type === 2 && player.pick_order <= 11
-            )
-            .map((player) => (
-              <div key={player.data.id} style={handleSubstitute(player)}>
-                {" "}
-                <Player
-                  player={player}
-                  selectedPositionOption={selectedPositionOption}
-                  updateSelectedPosition={updateSelectedPosition}
-                />
-                <button onClick={() => setPlayerPosition(player.position)}>
-                  Substitute
-                </button>
-              </div>
-            ))}
-        </section>
+          {/* RENDER MIDFIELERS SECTION */}
+          <section className="pitch__mid">
+            {userData
+              .filter(
+                (player) =>
+                  player.data.element_type === 3 && player.pick_order <= 11
+              )
+              .map((player) => (
+                <div key={player.data.id} style={handleSubstitute(player)}>
+                  {" "}
+                  <Player
+                    player={player}
+                    selectedPositionOption={selectedPositionOption}
+                    updateSelectedPosition={updateSelectedPosition}
+                    handleSubstituteClick={handleSubstituteClick}
+                  />
+                </div>
+              ))}
+          </section>
 
-        {/* RENDER MIDFIELERS SECTION */}
-        <section className="pitch__mid">
-          {userData
-            .filter(
-              (player) =>
-                player.data.element_type === 3 && player.pick_order <= 11
-            )
-            .map((player) => (
-              <div key={player.data.id} style={handleSubstitute(player)}>
-                {" "}
-                <Player
-                  player={player}
-                  selectedPositionOption={selectedPositionOption}
-                  updateSelectedPosition={updateSelectedPosition}
-                />
-                <button onClick={() => setPlayerPosition(player.position)}>
-                  Substitute
-                </button>
-              </div>
-            ))}
-        </section>
+          {/* RENDER FORWARDS SECTION */}
+          <section className="pitch__fwd">
+            {userData
+              .filter(
+                (player) =>
+                  player.data.element_type === 4 && player.pick_order <= 11
+              )
+              .map((player) => (
+                <div key={player.data.id} style={handleSubstitute(player)}>
+                  {" "}
+                  <Player
+                    player={player}
+                    selectedPositionOption={selectedPositionOption}
+                    updateSelectedPosition={updateSelectedPosition}
+                    handleSubstituteClick={handleSubstituteClick}
+                  />
+                </div>
+              ))}
+          </section>
 
-        {/* RENDER FORWARDS SECTION */}
-        <section className="pitch__fwd">
-          {userData
-            .filter(
-              (player) =>
-                player.data.element_type === 4 && player.pick_order <= 11
-            )
-            .map((player) => (
-              <div key={player.data.id} style={handleSubstitute(player)}>
-                {" "}
-                <Player
-                  player={player}
-                  selectedPositionOption={selectedPositionOption}
-                  updateSelectedPosition={updateSelectedPosition}
-                />
-                <button onClick={() => setPlayerPosition(player.position)}>
-                  Substitute
-                </button>
-              </div>
-            ))}
-        </section>
+          {/* RENDER SUBS SECTION */}
+          <section className="pitch__sub">
+            {userData
+              .filter((player) => player.pick_order > 11)
+              .map((player) => (
+                <div key={player.data.id} style={handleSubstitute(player)}>
+                  {" "}
+                  <Player
+                    player={player}
+                    selectedPositionOption={selectedPositionOption}
+                    updateSelectedPosition={updateSelectedPosition}
+                    handleSubstituteClick={handleSubstituteClick}
+                  />
 
-        {/* RENDER SUBS SECTION */}
-        <section className="pitch__sub">
-          {userData
-            .filter((player) => player.pick_order > 11)
-            .map((player) => (
-              <div key={player.data.id} style={handleSubstitute(player)}>
-                {" "}
-                <Player
-                  player={player}
-                  selectedPositionOption={selectedPositionOption}
-                  updateSelectedPosition={updateSelectedPosition}
-                />
-                <button onClick={() => setPlayerPosition(player.position)}>
-                  Substitute
-                </button>
-              </div>
-            ))}
-        </section>
-      </div>
+                </div>
+              ))}
+          </section>
+        </div>
 
-      {/* RENDER PLAYERS LIST */}
-      <div className="players__list">
-        <PlayersList
-          selectedPositionOption={selectedPositionOption}
-          updateSelectedPosition={updateSelectedPosition}
-        />
-      </div>
+        {/* RENDER PLAYERS LIST */}
+        <div className="players__list">
+          <PlayersList
+            selectedPositionOption={selectedPositionOption}
+            updateSelectedPosition={updateSelectedPosition}
+          />
+        </div>
       </div>
     </div>
   );

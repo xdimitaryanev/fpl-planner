@@ -49,7 +49,9 @@ input[type=number] {
 
 .player__img {
   width: 50px;
+
 }
+
 
 .player div h3 {
   font-size: .7em;
@@ -58,7 +60,13 @@ input[type=number] {
 .img__wrapper {
   display: flex;
   flex-direction: column;
+  transition: all .3s ease-in-out;
 }
+
+.img__wrapper:hover {
+  transform: translateY(-10px);
+}
+
 
 .captain__img {
   width: 17px;
@@ -91,6 +99,17 @@ table, th, td {
 
 .transfer__popup {
   position: fixed;
-  height: 500px;
-  background-color: blue;
+  left: 0;
+  top: 0;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.155);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0 0;
+  text-align: center;
+  z-index: 999;
 }
+

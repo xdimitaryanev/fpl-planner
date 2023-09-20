@@ -57,28 +57,35 @@ function getNextFixture(player) {
 
 
 
-function Player({ player, updateSelectedPosition }) {
+function Player({ player, updateSelectedPosition,handleSubstituteClick }) {
   const [showPlayer, setShowPlayer] = useState(true);
   const [showButtons, setShowButtons] = useState(true);
   const [popupVisibility, setPopupVisibility] = useState(false);
 
-  function handlePlayerClick() {
-    setPopupVisibility(true)
+  function handleSubsClick() {
+    handleSubstituteClick(player)
+    setPopupVisibility(false)
   };
+
+  function handleTransferOutClick() {
+    removePlayer()
+    setPopupVisibility(false)
+  }
 
 
   function renderPopup(){
     return (
       <>
       <div className="transfer__popup">
-        <button onClick={removePlayer}>Transfer out</button>
-        <button>Substitute</button>
+        <button onClick={handleTransferOutClick}>Transfer out</button>
+        <button onClick={handleSubsClick}>Substitute</button>
+        <button>Make Captain</button>
+        <button>Make Vice Captain</button>
         <button onClick={()=>setPopupVisibility(false)}>X</button>
       </div>
       </>
     )
   };
-
 
   function removeButtons() {
     setShowButtons(false);
@@ -103,7 +110,9 @@ function Player({ player, updateSelectedPosition }) {
     <div className="player">
       {popupVisibility ? renderPopup() : null}
       {showPlayer ? (
-        <div className="img__wrapper">
+        <>
+        <div className="img__wrapper"
+        onClick={()=>setPopupVisibility(true)}>
           <img
             className="player__img"
             src={
@@ -124,27 +133,20 @@ function Player({ player, updateSelectedPosition }) {
             }
             alt=""
           />
-          <div>
-            <h3>
-              {player.data.web_name} {getPrice(player)}£ <br />
-              {getXg(player)} <br />
-              {player.fixtures_index}
-            </h3>
-            {getNextFixture(player)}
-          </div>
-          <button  onClick={()=>setPopupVisibility(true)}>dasda</button>
         </div>
+                  <div>
+                  <h3>
+                    {player.data.web_name} {getPrice(player)}£ <br />
+                    {getXg(player)} <br />
+                    {player.fixtures_index}
+                  </h3>
+                  {getNextFixture(player)}
+                </div></>
       ) : (
         <div>
           <button onClick={addPlayer}>Restore</button>
         </div>
       )}
-      {showButtons ? (
-        <div>
-          {/* <button onClick={()=>setPlayerPosition(player.position)}>Substitute</button> */}
-          <button onClick={removePlayer}>Transfer Out</button>
-        </div>
-      ) : null}
     </div>
   );
 }
