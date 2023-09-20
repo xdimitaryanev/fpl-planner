@@ -26,9 +26,13 @@ function App() {
   const [userInfo, setUserInfo] = useState({});
   const [currentGw, setCurrentGw] = useState(null);
   const [isLoadBtnClicked, setIsLoadBtnClicked] = useState(false);
+
   const [playerPositon, setPlayerPosition] = useState();
 
-  useEffect(() => {
+  const [selectedPositionOption, setSelectedPositionOption] = useState("all");
+
+  {/* FETCH USER AND PLAYERS DATA */}
+  useEffect(() => { 
     async function loadFixturesOfUserTeam() {
       const playersPromises = userData.map(
         async (player) =>
@@ -43,26 +47,26 @@ function App() {
       const playersArr = await Promise.all(playersPromises);
       setUserData(playersArr);
     }
-    loadFixturesOfUserTeam();
-  }, [gameWeek]);
-
-  useEffect(() => {
     async function fetchCurrentGw() {
       const [nextGw] = await getNextGw();
       setCurrentGw(nextGw);
     }
+    loadFixturesOfUserTeam();
     fetchCurrentGw();
-  }, []);
+  }, [gameWeek]);
 
-  function increaseGameWeek() {
+
+  {/* HANDLE GAMEWEEK NAVIGATION */}
+
+  function increaseGameWeek() {     // GW++
     setGameWeek((prevGameWeek) => prevGameWeek + 1);
   }
 
-  function decreaseGameWeek() {
-    setGameWeek((prevGameWeek) => prevGameWeek - 1);
+  function decreaseGameWeek() {     // GW--
+    setGameWeek((prevGameWeek) => prevGameWeek - 1);   
   }
 
-  function renderBtns() {
+  function renderBtns() {     // RENDER GAMEWEEK NAV CONDITIONALLY
     const isPrevBtnVisible = gameWeek === currentGw;
     const isNextBtnVisible = gameWeek < 38;
 
@@ -78,7 +82,14 @@ function App() {
     );
   }
 
-  function renderUserInfo() {
+  {/* HANDLE USER INFO */}
+  async function loadUserInfo() {     // FETCH USER INFO
+    const [currentGw] = await getCurrentGw();
+    const userInfo = await createUserInfo(userId, currentGw);
+    setUserInfo(userInfo);
+  }
+
+  function renderUserInfo() {     // RENDER USER INFO
     return (
       <>
         <h2>Hello, {userInfo.name}</h2> {""}
@@ -88,12 +99,11 @@ function App() {
     );
   }
 
-  async function loadUserInfo() {
-    const [currentGw] = await getCurrentGw();
-    const userInfo = await createUserInfo(userId, currentGw);
-    setUserInfo(userInfo);
-  }
 
+
+
+
+  {/* INITIALIZE THE APP ON LOAD BUTTON CLICK */}
   const loadTeam = async (userId) => {
     getAllPlayersData();
     const [nextGw] = await getNextGw();
@@ -113,7 +123,12 @@ function App() {
     setIsLoadBtnClicked(true);
   };
 
-  function handleSubClick(player) {
+  // TODOO //
+  function updateSelectedPosition(position) {
+    setSelectedPositionOption(position);
+  }
+
+  function handleSubstituteClick(player) {
     setPlayerPosition(player.position);
   }
 
@@ -121,6 +136,8 @@ function App() {
     const color = playerPositon === player.position ? "yellow" : "white";
     return { backgroundColor: color };
   }
+
+
 
   return (
     <div className="App">
@@ -149,14 +166,15 @@ function App() {
 
       <div>
         {isLoadBtnClicked ? renderUserInfo() : null}
-
-        {/* {" "}
-        Gameweek {gameWeek-1} Rank: {userInfo.gameweek_rank} -
-        Money Remaining: {userInfo.bank}£ {""}
-        {userInfo.team_name} */}
       </div>
       {isLoadBtnClicked ? renderBtns() : null}
+
+<div className="app__wrapper"
+> 
+      {/* RENDER PITCH */}
       <div className="pitch__wrapper">
+
+        {/* RENDER GOALKEEPER SECTION */}
         <section className="pitch__gk">
           {userData
             .filter(
@@ -164,16 +182,23 @@ function App() {
                 player.data.element_type === 1 && player.pick_order === 1
             )
             .map((player) => (
-              <div key={player.data.id} style={handleSubstitute(player)}>
+              <div 
+             
+              key={player.data.id} style={handleSubstitute(player)}>
                 {" "}
-                <Player player={player} />
-                <button onClick={() => handleSubClick(player)}>
+                <Player
+                  player={player}
+                  selectedPositionOption={selectedPositionOption}
+                  updateSelectedPosition={updateSelectedPosition}
+                />
+                <button onClick={() => handleSubstituteClick(player)}>
                   Substitute
                 </button>
               </div>
             ))}
         </section>
 
+        {/* RENDER DEFENDERS SECTION */}
         <section className="pitch__def">
           {userData
             .filter(
@@ -183,7 +208,11 @@ function App() {
             .map((player) => (
               <div key={player.data.id} style={handleSubstitute(player)}>
                 {" "}
-                <Player player={player} />
+                <Player
+                  player={player}
+                  selectedPositionOption={selectedPositionOption}
+                  updateSelectedPosition={updateSelectedPosition}
+                />
                 <button onClick={() => setPlayerPosition(player.position)}>
                   Substitute
                 </button>
@@ -191,6 +220,7 @@ function App() {
             ))}
         </section>
 
+        {/* RENDER MIDFIELERS SECTION */}
         <section className="pitch__mid">
           {userData
             .filter(
@@ -200,7 +230,11 @@ function App() {
             .map((player) => (
               <div key={player.data.id} style={handleSubstitute(player)}>
                 {" "}
-                <Player player={player} />
+                <Player
+                  player={player}
+                  selectedPositionOption={selectedPositionOption}
+                  updateSelectedPosition={updateSelectedPosition}
+                />
                 <button onClick={() => setPlayerPosition(player.position)}>
                   Substitute
                 </button>
@@ -208,6 +242,7 @@ function App() {
             ))}
         </section>
 
+        {/* RENDER FORWARDS SECTION */}
         <section className="pitch__fwd">
           {userData
             .filter(
@@ -217,7 +252,11 @@ function App() {
             .map((player) => (
               <div key={player.data.id} style={handleSubstitute(player)}>
                 {" "}
-                <Player player={player} />
+                <Player
+                  player={player}
+                  selectedPositionOption={selectedPositionOption}
+                  updateSelectedPosition={updateSelectedPosition}
+                />
                 <button onClick={() => setPlayerPosition(player.position)}>
                   Substitute
                 </button>
@@ -225,19 +264,33 @@ function App() {
             ))}
         </section>
 
+        {/* RENDER SUBS SECTION */}
         <section className="pitch__sub">
           {userData
             .filter((player) => player.pick_order > 11)
             .map((player) => (
               <div key={player.data.id} style={handleSubstitute(player)}>
                 {" "}
-                <Player player={player} />
+                <Player
+                  player={player}
+                  selectedPositionOption={selectedPositionOption}
+                  updateSelectedPosition={updateSelectedPosition}
+                />
                 <button onClick={() => setPlayerPosition(player.position)}>
                   Substitute
                 </button>
               </div>
             ))}
         </section>
+      </div>
+
+      {/* RENDER PLAYERS LIST */}
+      <div className="players__list">
+        <PlayersList
+          selectedPositionOption={selectedPositionOption}
+          updateSelectedPosition={updateSelectedPosition}
+        />
+      </div>
       </div>
     </div>
   );

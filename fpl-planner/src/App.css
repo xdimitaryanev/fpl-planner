@@ -31,6 +31,7 @@ input[type=number] {
   justify-content: center;
   align-items: center;
   gap: 5em;
+  margin-top: 5em;
 }
 
 .pitch__wrapper section {
@@ -47,7 +48,7 @@ input[type=number] {
 }
 
 .player__img {
-  width: 60px;
+  width: 50px;
 }
 
 .player div h3 {
@@ -78,4 +79,18 @@ table, th, td {
 
 .table__wrapper{
   max-height: 500px;
+}
+
+.players__list {
+  margin-top: 5em;
+}
+
+.app__wrapper {
+  display: flex;
+}
+
+.transfer__popup {
+  position: fixed;
+  height: 500px;
+  background-color: blue;
 }

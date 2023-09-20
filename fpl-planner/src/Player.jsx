@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { render } from "react-dom";
 
 const getDifficultyColor = (fixtureDifficulty) => {
   const color =
@@ -53,9 +54,31 @@ function getNextFixture(player) {
   return fixture;
 }
 
-function Player({ player }) {
+
+
+
+function Player({ player, updateSelectedPosition }) {
   const [showPlayer, setShowPlayer] = useState(true);
   const [showButtons, setShowButtons] = useState(true);
+  const [popupVisibility, setPopupVisibility] = useState(false);
+
+  function handlePlayerClick() {
+    setPopupVisibility(true)
+  };
+
+
+  function renderPopup(){
+    return (
+      <>
+      <div className="transfer__popup">
+        <button onClick={removePlayer}>Transfer out</button>
+        <button>Substitute</button>
+        <button onClick={()=>setPopupVisibility(false)}>X</button>
+      </div>
+      </>
+    )
+  };
+
 
   function removeButtons() {
     setShowButtons(false);
@@ -68,6 +91,7 @@ function Player({ player }) {
   function removePlayer() {
     setShowPlayer(false);
     removeButtons();
+    updateSelectedPosition(player.position)
   }
 
   function addPlayer() {
@@ -77,6 +101,7 @@ function Player({ player }) {
 
   return (
     <div className="player">
+      {popupVisibility ? renderPopup() : null}
       {showPlayer ? (
         <div className="img__wrapper">
           <img
@@ -107,6 +132,7 @@ function Player({ player }) {
             </h3>
             {getNextFixture(player)}
           </div>
+          <button  onClick={()=>setPopupVisibility(true)}>dasda</button>
         </div>
       ) : (
         <div>

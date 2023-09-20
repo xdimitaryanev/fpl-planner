@@ -2,71 +2,79 @@ import React, { useEffect, useState } from "react";
 import { getAllPlayersData, getAllTeams } from "./data/handleData";
 import Player from "./Player";
 
-function PlayersList() {
+function PlayersList({ selectedPositionOption, updateSelectedPosition }) {
+
   const [selectedSortOption, setSelectedSortOption] = useState("total-points");
   const [selectedTeamOption, setSelectedTeamOption] = useState("all");
-  const [selectedPositionOption, setSelectedPositionOption] = useState("all");
-  const [paginatedPlayers, setPaginatedPlayers] = useState([]);
+  const [listOfPlayers, setListOfPlayers] = useState([]);
   const [teams, setTeams] = useState([]);
 
+
+  // FETCH AND SORT AND FILTER PLAYERS LIST //
   useEffect(() => {
     const getFilteredPlayerList = async () => {
       const allPlayers = await getAllPlayersData();
       console.log(allPlayers);
       const filteredByPositionPlayerList =
-      selectedPositionOption === "all"
+        selectedPositionOption === "all"
           ? allPlayers
           : ["GK", "MID", "FWD", "DEF"].includes(selectedPositionOption)
           ? allPlayers.filter(
               (player) => player.position === selectedPositionOption
             )
-          : allPlayers.filter((player) => player.team === selectedPositionOption);
+          : allPlayers.filter(
+              (player) => player.team === selectedPositionOption
+            );
 
 
-      selectedSortOption === "total-points"
+      // SORT BY... //
+      selectedSortOption === "total-points"     // DEFAULT SORT BY TOTAL POINTS
         ? filteredByPositionPlayerList.sort(
             (a, b) => b.data.total_points - a.data.total_points
           )
-        : selectedSortOption === "xgi"
+        : selectedSortOption === "xgi"      // SORT BY PRICE XGI PER 90
         ? filteredByPositionPlayerList.sort(
             (a, b) =>
               b.data.expected_goal_involvements_per_90 -
               a.data.expected_goal_involvements_per_90
           )
-        : selectedSortOption === "xgc"
+        : selectedSortOption === "xgc"      // SORT BY PRICE XGC PER 90
         ? filteredByPositionPlayerList.sort(
-          (a, b) =>
-            b.data.expected_goals_conceded_per_90 -
-            a.data.expected_goals_conceded_per_90
-        ) : selectedSortOption === "price-hl" ? filteredByPositionPlayerList.sort(
-          (a, b) =>
-            b.data.now_cost -
-            a.data.now_cost
-        ) : selectedSortOption === "price-lh" ? 
-        filteredByPositionPlayerList.sort(
-          (a, b) =>
-            a.data.now_cost -
-            b.data.now_cost
-        ) : null
+            (a, b) =>
+              b.data.expected_goals_conceded_per_90 -
+              a.data.expected_goals_conceded_per_90
+          )
+        : selectedSortOption === "price-hl"     // SORT BY PRICE HIGH TO LOW
+        ? filteredByPositionPlayerList.sort(
+            (a, b) => b.data.now_cost - a.data.now_cost
+          )
+        : selectedSortOption === "price-lh"     // SORT BY PRICE LOW TO HIGH
+        ? filteredByPositionPlayerList.sort(
+            (a, b) => a.data.now_cost - b.data.now_cost
+          )
+        : null;
 
-        const filteredPlayerList =
-        selectedTeamOption === "all"
+      // FILTER BY TEAM //
+      const filteredPlayerList =
+        selectedTeamOption === "all" // DEFAULT
           ? filteredByPositionPlayerList
           : filteredByPositionPlayerList.filter(
               (player) => player.team === selectedTeamOption
-            )
+            );
 
-      setPaginatedPlayers(filteredPlayerList);
+      setListOfPlayers(filteredPlayerList);
     };
+
+    // FETCH ALL TEAM NAMES //
     const getAllTeamNames = async () => {
       const teamNames = await getAllTeams();
       setTeams(teamNames);
     };
-
     getAllTeamNames();
     getFilteredPlayerList();
   }, [selectedTeamOption, selectedSortOption, selectedPositionOption]);
 
+  // HANDLE ONCHANGE EVENTS //
   function handleSortingOption(e) {
     const sortBy = e.target.value;
     setSelectedSortOption(sortBy);
@@ -81,7 +89,7 @@ function PlayersList() {
 
   function handlePositionOption(e) {
     const position = e.target.value;
-    setSelectedPositionOption(position)
+    updateSelectedPosition(position);
   }
 
   return (
@@ -100,8 +108,6 @@ function PlayersList() {
         <option value="price-hl">Price High to low</option>
       </select>
 
-
-
       <label htmlFor="team">Team</label>
       <select
         name="team"
@@ -109,11 +115,11 @@ function PlayersList() {
         value={selectedPositionOption}
         onChange={handlePositionOption}
       >
-          <option value="all">All players</option>
-          <option value="GK">Goalkeepers</option>
-          <option value="DEF">Defenders</option>
-          <option value="MID">Midfielders</option>
-          <option value="FWD">Forwards</option>
+        <option value="all">All players</option>
+        <option value="GK">Goalkeepers</option>
+        <option value="DEF">Defenders</option>
+        <option value="MID">Midfielders</option>
+        <option value="FWD">Forwards</option>
       </select>
 
       <label htmlFor="position">Position</label>
@@ -124,19 +130,17 @@ function PlayersList() {
         onChange={handleTeamOption}
       >
         <option value="all">All players</option>
-  {teams.map((team) => (
-            <option value={team.short_name} key={team.code}>
-              {team.name}
-            </option>
-          ))}
-
+        {teams.map((team) => (
+          <option value={team.short_name} key={team.code}>
+            {team.name}
+          </option>
+        ))}
       </select>
-
       <div className="table__wrapper">
         <table>
           <tbody>
             <tr className="table">
-              {paginatedPlayers.map((player) => (
+              {listOfPlayers.map((player) => (
                 <td key={player.data.id}>
                   {player.data.total_points}
                   <Player player={player} />
