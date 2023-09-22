@@ -74,7 +74,7 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank 
     };
     getAllTeamNames();
     getFilteredPlayerList();
-  }, [selectedTeamOption, selectedSortOption, selectedPositionOption, isAffordable]);
+  }, [selectedTeamOption, selectedSortOption, selectedPositionOption, isAffordable, userBank]);
 
   // HANDLE ONCHANGE EVENTS //
   function handleSortingOption(e) {

@@ -60,45 +60,22 @@ function getNextFixture(player) {
 function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,handleSubstituteClick, handleMakeCaptain, captainId, viceCaptainId, handleMakeViceCaptain, updateUserBank, restoreUserBank }) {
   const [showPlayer, setShowPlayer] = useState(true);
   const [showButtons, setShowButtons] = useState(true);
-  const [popupVisibility, setPopupVisibility] = useState(false);
-//   const [captainId, setCaptainId] = useState(null);
-  
-//   useEffect(()=>{
-//     function getCaptain() {
-//       playerData.is_captain ? setCaptainId(playerData.data.id) : null
-//       console.log(playerData)
-//     }
-// getCaptain()
-//   },[playerData])
-
-//   function updatePlayerData(updatedPlayerData) {
-//     setPlayerData({...playerData, ...updatedPlayerData})
-//   }
-
-  
-
-//   function handleMakeCaptain() {
-//     if (captainId === playerData.data.id) {
-//       updatePlayerData({ is_captain: false });
-//     } else {
-//         updatePlayerData({ is_captain: true });
-//         setCaptainId(playerData.data.id)
-//       }
-
-//     }
+  const [removePlayerPopupVisibility, setRemovePlayerPopupVisibility] = useState(false);
+  const [restorePlayerPopupVisibility, setRestorePlayerPopupVisibility] = useState(false)
 
   function handleSubsClick() {
     handleSubstituteClick(player)
-    setPopupVisibility(false)
+    setRemovePlayerPopupVisibility(false)
   };
 
   function handleTransferOutClick() {
     removePlayer()
-    setPopupVisibility(false)
+    setRemovePlayerPopupVisibility(false)
+    setRestorePlayerPopupVisibility(false)
   }
 
 
-  function renderPopup(){
+  function renderRemovePlayerPopup(){
     return (
       <>
       <div className="transfer__popup">
@@ -106,7 +83,19 @@ function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,hand
         <button onClick={handleSubsClick}>Substitute</button>
         <button onClick={()=>handleMakeCaptain(player.data.id,gameWeek,gameWeekCaptain)}>Make Captain</button>
         <button onClick={()=>handleMakeViceCaptain(player.data.id)}>Make Vice Captain</button>
-        <button onClick={()=>setPopupVisibility(false)}>X</button>
+        <button onClick={()=>setRemovePlayerPopupVisibility(false)}>X</button>
+      </div>
+      </>
+    )
+  };
+
+  function renderRestorePlayerPopup(){
+    return (
+      <>
+      <div className="transfer__popup">
+      <button onClick={addPlayer}>Restore</button>
+      <button onClick={handleSelectReplacement}>Select Replacement</button>
+      <button onClick={()=>setRestorePlayerPopupVisibility(false)}>X</button>
       </div>
       </>
     )
@@ -128,6 +117,8 @@ function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,hand
 
   function handleSelectReplacement() {
     updateSelectedPosition(player.position)
+    setRestorePlayerPopupVisibility(false)
+    console.log(restorePlayerPopupVisibility)
   }
 
   function addPlayer() {
@@ -139,12 +130,13 @@ function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,hand
 
   return (
     <div className="player">
-      {popupVisibility ? renderPopup() : null}
+      {removePlayerPopupVisibility ? renderRemovePlayerPopup() : null}
       {showPlayer ? (
         <>
         <div className="img__wrapper"
-        onClick={()=>setPopupVisibility(true)}>
+>
           <img
+            onClick={()=>setRemovePlayerPopupVisibility(true)}
             className="player__img"
             src={
               player.data.element_type === 1
@@ -174,14 +166,17 @@ function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,hand
                   {getNextFixture(player)}
                 </div></>
       ) : (
-        <div className="player">
+        <div className="player"
+        
+        >
+          {restorePlayerPopupVisibility ? renderRestorePlayerPopup() : null}
           <img
+            onClick={()=>setRestorePlayerPopupVisibility(true)}
             className="player__img"
             src="+.webp"
             alt=""
           />
-          <button onClick={addPlayer}>Restore</button>
-          <button onClick={handleSelectReplacement}>Select Replacement</button>
+
         </div>
       )}
     </div>
