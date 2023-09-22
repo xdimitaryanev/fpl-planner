@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { render } from "react-dom";
 
 const getDifficultyColor = (fixtureDifficulty) => {
@@ -57,10 +57,35 @@ function getNextFixture(player) {
 
 
 
-function Player({ player, updateSelectedPosition,handleSubstituteClick }) {
+function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,handleSubstituteClick, handleMakeCaptain, captainId, viceCaptainId, handleMakeViceCaptain }) {
   const [showPlayer, setShowPlayer] = useState(true);
   const [showButtons, setShowButtons] = useState(true);
   const [popupVisibility, setPopupVisibility] = useState(false);
+//   const [captainId, setCaptainId] = useState(null);
+  
+//   useEffect(()=>{
+//     function getCaptain() {
+//       playerData.is_captain ? setCaptainId(playerData.data.id) : null
+//       console.log(playerData)
+//     }
+// getCaptain()
+//   },[playerData])
+
+//   function updatePlayerData(updatedPlayerData) {
+//     setPlayerData({...playerData, ...updatedPlayerData})
+//   }
+
+  
+
+//   function handleMakeCaptain() {
+//     if (captainId === playerData.data.id) {
+//       updatePlayerData({ is_captain: false });
+//     } else {
+//         updatePlayerData({ is_captain: true });
+//         setCaptainId(playerData.data.id)
+//       }
+
+//     }
 
   function handleSubsClick() {
     handleSubstituteClick(player)
@@ -79,8 +104,8 @@ function Player({ player, updateSelectedPosition,handleSubstituteClick }) {
       <div className="transfer__popup">
         <button onClick={handleTransferOutClick}>Transfer out</button>
         <button onClick={handleSubsClick}>Substitute</button>
-        <button>Make Captain</button>
-        <button>Make Vice Captain</button>
+        <button onClick={()=>handleMakeCaptain(player.data.id,gameWeek,gameWeekCaptain)}>Make Captain</button>
+        <button onClick={()=>handleMakeViceCaptain(player.data.id)}>Make Vice Captain</button>
         <button onClick={()=>setPopupVisibility(false)}>X</button>
       </div>
       </>
@@ -125,9 +150,9 @@ function Player({ player, updateSelectedPosition,handleSubstituteClick }) {
           <img
             className="captain__img"
             src={
-              player.is_captain
+              player.data.id === captainId
                 ? `circleC.png`
-                : player.is_vice_captain
+                : player.data.id === viceCaptainId
                 ? `circleV.png`
                 : null
             }
