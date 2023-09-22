@@ -26,14 +26,14 @@ function App() {
   const [userInfo, setUserInfo] = useState({});
   const [currentGw, setCurrentGw] = useState(null);
   const [isLoadBtnClicked, setIsLoadBtnClicked] = useState(false);
-  const [userBank, setUserBank] = useState(userInfo.bank)
+  const [userBank, setUserBank] = useState(userInfo.bank);
 
   const [playerPositon, setPlayerPosition] = useState();
 
   const [selectedPositionOption, setSelectedPositionOption] = useState("all");
-  const [captainId, setCaptainId] = useState(null)
-  const [viceCaptainId, setViceCaptainId] = useState(null)
-  const [gameWeekCaptain, setGameWeekCaptain] = useState({})
+  const [captainId, setCaptainId] = useState(null);
+  const [viceCaptainId, setViceCaptainId] = useState(null);
+  const [gameWeekCaptain, setGameWeekCaptain] = useState({});
   {
     /* FETCH USER AND PLAYERS DATA */
   }
@@ -57,28 +57,22 @@ function App() {
       setCurrentGw(nextGw);
     }
 
-    
     loadFixturesOfUserTeam();
     fetchCurrentGw();
   }, [gameWeek]);
 
-  useEffect(()=> {
+  useEffect(() => {
     function getCaptainId() {
-      if(captainId === null) {
-      userData.map((player)=> {
-        player.is_captain ? setCaptainId(player.data.id) : null
-        player.is_vice_captain ? setViceCaptainId(player.data.id) : null
+      if (captainId === null) {
+        userData.map((player) => {
+          player.is_captain ? setCaptainId(player.data.id) : null;
+          player.is_vice_captain ? setViceCaptainId(player.data.id) : null;
+        });
       }
-      )}
     }
-getCaptainId()
-  },[userData, captainId])
+    getCaptainId();
+  }, [userData, captainId]);
 
-
-
-
- 
- 
   {
     /* HANDLE GAMEWEEK NAVIGATION */
   }
@@ -118,7 +112,7 @@ getCaptainId()
     const [currentGw] = await getCurrentGw();
     const userInfo = await createUserInfo(userId, currentGw);
     setUserInfo(userInfo);
-    setUserBank(Number(userInfo.bank))
+    setUserBank(Number(userInfo.bank));
   }
 
   function renderUserInfo() {
@@ -128,8 +122,11 @@ getCaptainId()
         <h2>Hello, {userInfo.name}</h2> {""}
         <h3>Total Points: {userInfo.total_points}</h3>
         <h4>Overall Rank: {userInfo.overall_rank}</h4>
-        <h5>Money in the bank: {`${userBank/10}£`}</h5>
-        <h5>Transfers Avaible: {`${userInfo.event_transfers} / ${userInfo.last_deadline_total_transfers}`}</h5>
+        <h5>Money in the bank: {`${userBank / 10}£`}</h5>
+        <h5>
+          Transfers Avaible:{" "}
+          {`${userInfo.event_transfers} / ${userInfo.last_deadline_total_transfers}`}
+        </h5>
       </>
     );
   }
@@ -139,8 +136,8 @@ getCaptainId()
   }
   const loadTeam = async (userId) => {
     getAllPlayersData();
-    setCaptainId(null)
-    setViceCaptainId(null)
+    setCaptainId(null);
+    setViceCaptainId(null);
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
     const userPromises = userTeam.map((player) =>
@@ -173,32 +170,32 @@ getCaptainId()
   }
 
   function updateUserBank(playerPrice) {
-    setUserBank((prev)=>prev+playerPrice);
+    setUserBank((prev) => prev + playerPrice);
   }
 
   function restoreUserBank(playerPrice) {
-    setUserBank((prev)=>prev-playerPrice);
+    setUserBank((prev) => prev - playerPrice);
   }
 
-  function handleMakeCaptain(id,gameWeek,gameWeekCaptain) {
+  function handleMakeCaptain(id, gameWeek, gameWeekCaptain) {
     setGameWeekCaptain((prevGameWeekCaptain) => ({
-     ...prevGameWeekCaptain,
-     [gameWeek]: id,
-   }));
-   if(id === viceCaptainId) {
-    setViceCaptainId(captainId)
-   }
-   setCaptainId(id)
-   }
-
-   function handleMakeViceCaptain(id) {
-    console.log(userInfo)
-    if(id === captainId) {
-      setCaptainId(viceCaptainId)
+      ...prevGameWeekCaptain,
+      [gameWeek]: id,
+    }));
+    if (id === viceCaptainId) {
+      setViceCaptainId(captainId);
     }
-    setViceCaptainId(id)
-   }
-   
+    setCaptainId(id);
+  }
+
+  function handleMakeViceCaptain(id) {
+    console.log(userInfo);
+    if (id === captainId) {
+      setCaptainId(viceCaptainId);
+    }
+    setViceCaptainId(id);
+  }
+
   return (
     <div className="App">
       <form className="input-form">
@@ -363,7 +360,6 @@ getCaptainId()
                     updateUserBank={updateUserBank}
                     restoreUserBank={restoreUserBank}
                   />
-
                 </div>
               ))}
           </section>
@@ -374,6 +370,7 @@ getCaptainId()
           <PlayersList
             selectedPositionOption={selectedPositionOption}
             updateSelectedPosition={updateSelectedPosition}
+            userBank={userBank}
           />
         </div>
       </div>

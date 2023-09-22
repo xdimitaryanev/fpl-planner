@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { getAllPlayersData, getAllTeams } from "./data/handleData";
 import Player from "./Player";
 
-function PlayersList({ selectedPositionOption, updateSelectedPosition }) {
+function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank }) {
 
   const [selectedSortOption, setSelectedSortOption] = useState("total-points");
   const [selectedTeamOption, setSelectedTeamOption] = useState("all");
   const [listOfPlayers, setListOfPlayers] = useState([]);
+  const [isAffordable, setIsAffordable] = useState(false)
   const [teams, setTeams] = useState([]);
 
 
@@ -14,7 +15,6 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition }) {
   useEffect(() => {
     const getFilteredPlayerList = async () => {
       const allPlayers = await getAllPlayersData();
-      console.log(allPlayers);
       const filteredByPositionPlayerList =
         selectedPositionOption === "all"
           ? allPlayers
@@ -61,8 +61,10 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition }) {
           : filteredByPositionPlayerList.filter(
               (player) => player.team === selectedTeamOption
             );
-
-      setListOfPlayers(filteredPlayerList);
+            console.log(userBank)
+      const isPlayerAffordable = isAffordable ? filteredPlayerList.filter((player) => player.data.now_cost <= userBank) : filteredPlayerList
+  console.log(filteredPlayerList)
+      setListOfPlayers(isPlayerAffordable);
     };
 
     // FETCH ALL TEAM NAMES //
@@ -72,24 +74,27 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition }) {
     };
     getAllTeamNames();
     getFilteredPlayerList();
-  }, [selectedTeamOption, selectedSortOption, selectedPositionOption]);
+  }, [selectedTeamOption, selectedSortOption, selectedPositionOption, isAffordable]);
 
   // HANDLE ONCHANGE EVENTS //
   function handleSortingOption(e) {
     const sortBy = e.target.value;
     setSelectedSortOption(sortBy);
-    console.log(selectedSortOption);
   }
 
   function handleTeamOption(e) {
     const team = e.target.value;
     setSelectedTeamOption(team);
-    console.log(team);
   }
 
   function handlePositionOption(e) {
     const position = e.target.value;
     updateSelectedPosition(position);
+  }
+
+  function handleAffordable(e) {
+    setIsAffordable(e.target.checked)
+    setSelectedSortOption("price-hl") 
   }
 
   return (
@@ -135,7 +140,13 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition }) {
             {team.name}
           </option>
         ))}
+
       </select>
+      <div>
+      <input onChange={handleAffordable} type="checkbox" id="scales" name="Affordable" />
+    <label htmlFor="scales">Affordable</label>
+  </div>
+
       <div className="table__wrapper">
         <table>
           <tbody>

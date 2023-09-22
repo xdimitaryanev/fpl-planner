@@ -123,8 +123,11 @@ function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,hand
   function removePlayer() {
     setShowPlayer(false);
     removeButtons();
-    updateSelectedPosition(player.position)
     updateUserBank(player.data.now_cost)
+  }
+
+  function handleSelectReplacement() {
+    updateSelectedPosition(player.position)
   }
 
   function addPlayer() {
@@ -171,8 +174,14 @@ function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,hand
                   {getNextFixture(player)}
                 </div></>
       ) : (
-        <div>
+        <div className="player">
+          <img
+            className="player__img"
+            src="+.webp"
+            alt=""
+          />
           <button onClick={addPlayer}>Restore</button>
+          <button onClick={handleSelectReplacement}>Select Replacement</button>
         </div>
       )}
     </div>
