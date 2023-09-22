@@ -66,6 +66,7 @@ async function createUserInfo(userId, gw) {
     overall_rank: userTeamInfo.entry_history.overall_rank,
     gameweek_rank: userTeamInfo.entry_history.rank,
     event_transfers: userTeamInfo.entry_history.event_transfers,
+    last_deadline_total_transfers: userInfo.last_deadline_total_transfers,
     event_transfers_cost: userTeamInfo.entry_history.event_transfers_cost,
     bank: userTeamInfo.entry_history.bank,
   };

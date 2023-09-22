@@ -57,7 +57,7 @@ function getNextFixture(player) {
 
 
 
-function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,handleSubstituteClick, handleMakeCaptain, captainId, viceCaptainId, handleMakeViceCaptain }) {
+function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,handleSubstituteClick, handleMakeCaptain, captainId, viceCaptainId, handleMakeViceCaptain, updateUserBank, restoreUserBank }) {
   const [showPlayer, setShowPlayer] = useState(true);
   const [showButtons, setShowButtons] = useState(true);
   const [popupVisibility, setPopupVisibility] = useState(false);
@@ -124,11 +124,14 @@ function Player({ player, gameWeek, gameWeekCaptain, updateSelectedPosition,hand
     setShowPlayer(false);
     removeButtons();
     updateSelectedPosition(player.position)
+    updateUserBank(player.data.now_cost)
   }
 
   function addPlayer() {
     setShowPlayer(true);
     addButtons();
+    console.log(player)
+    restoreUserBank(player.data.now_cost)
   }
 
   return (

@@ -55,16 +55,20 @@ input[type=number] {
 
 .player div h3 {
   font-size: .7em;
-} 
+}
 
 .img__wrapper {
   display: flex;
   flex-direction: column;
   transition: all .3s ease-in-out;
+  padding: 1em;
+  border: 1px solid black;
+  border-radius: 10px;
 }
 
 .img__wrapper:hover {
   transform: translateY(-10px);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 
@@ -74,18 +78,20 @@ input[type=number] {
 
 }
 
-table, th, td {
-  border:1px solid black;
+table,
+th,
+td {
+  border: 1px solid black;
 }
 
-.table{
+.table {
   display: flex;
- flex-wrap: wrap;
+  flex-wrap: wrap;
   max-height: 500px;
   overflow: scroll;
 }
 
-.table__wrapper{
+.table__wrapper {
   max-height: 500px;
 }
 
@@ -112,4 +118,3 @@ table, th, td {
   text-align: center;
   z-index: 999;
 }
-

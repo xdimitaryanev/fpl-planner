@@ -26,6 +26,7 @@ function App() {
   const [userInfo, setUserInfo] = useState({});
   const [currentGw, setCurrentGw] = useState(null);
   const [isLoadBtnClicked, setIsLoadBtnClicked] = useState(false);
+  const [userBank, setUserBank] = useState(userInfo.bank)
 
   const [playerPositon, setPlayerPosition] = useState();
 
@@ -117,6 +118,7 @@ getCaptainId()
     const [currentGw] = await getCurrentGw();
     const userInfo = await createUserInfo(userId, currentGw);
     setUserInfo(userInfo);
+    setUserBank(Number(userInfo.bank))
   }
 
   function renderUserInfo() {
@@ -126,6 +128,8 @@ getCaptainId()
         <h2>Hello, {userInfo.name}</h2> {""}
         <h3>Total Points: {userInfo.total_points}</h3>
         <h4>Overall Rank: {userInfo.overall_rank}</h4>
+        <h5>Money in the bank: {`${userBank/10}£`}</h5>
+        <h5>Transfers Avaible: {`${userInfo.event_transfers} / ${userInfo.last_deadline_total_transfers}`}</h5>
       </>
     );
   }
@@ -168,8 +172,14 @@ getCaptainId()
     return { backgroundColor: color };
   }
 
+  function updateUserBank(playerPrice) {
+    setUserBank((prev)=>prev+playerPrice);
+  }
 
-  
+  function restoreUserBank(playerPrice) {
+    setUserBank((prev)=>prev-playerPrice);
+  }
+
   function handleMakeCaptain(id,gameWeek,gameWeekCaptain) {
     setGameWeekCaptain((prevGameWeekCaptain) => ({
      ...prevGameWeekCaptain,
@@ -182,6 +192,7 @@ getCaptainId()
    }
 
    function handleMakeViceCaptain(id) {
+    console.log(userInfo)
     if(id === captainId) {
       setCaptainId(viceCaptainId)
     }
@@ -240,6 +251,8 @@ getCaptainId()
                     handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
+                    updateUserBank={updateUserBank}
+                    restoreUserBank={restoreUserBank}
                   />
                 </div>
               ))}
@@ -266,6 +279,8 @@ getCaptainId()
                     handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
+                    updateUserBank={updateUserBank}
+                    restoreUserBank={restoreUserBank}
                   />
                 </div>
               ))}
@@ -292,6 +307,8 @@ getCaptainId()
                     handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
+                    updateUserBank={updateUserBank}
+                    restoreUserBank={restoreUserBank}
                   />
                 </div>
               ))}
@@ -318,6 +335,8 @@ getCaptainId()
                     handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
+                    updateUserBank={updateUserBank}
+                    restoreUserBank={restoreUserBank}
                   />
                 </div>
               ))}
@@ -341,6 +360,8 @@ getCaptainId()
                     handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
+                    updateUserBank={updateUserBank}
+                    restoreUserBank={restoreUserBank}
                   />
 
                 </div>
