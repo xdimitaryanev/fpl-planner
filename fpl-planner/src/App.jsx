@@ -1,18 +1,10 @@
 import "./App.css";
 import {
-  getGeneralInfo,
-  getUserInfo,
-  getUserTeamInfo,
-  getPlayerData,
-} from "./data/api";
-import {
   createUserInfo,
   createPlayerData,
   getCurrentGw,
   getNextGw,
   getPicks,
-  getAllTeams,
-  getAllPlayers,
   getAllPlayersData,
 } from "./data/handleData";
 import PlayersList from "./PlayersList";
@@ -31,8 +23,7 @@ function App() {
   const [playerPositon, setPlayerPosition] = useState();
 
   const [selectedPositionOption, setSelectedPositionOption] = useState("all");
-  const [captainId, setCaptainId] = useState(null);
-  const [viceCaptainId, setViceCaptainId] = useState(null);
+
   const [gameWeekCaptain, setGameWeekCaptain] = useState({});
   {
     /* FETCH USER AND PLAYERS DATA */
@@ -61,17 +52,7 @@ function App() {
     fetchCurrentGw();
   }, [gameWeek]);
 
-  useEffect(() => {
-    function getCaptainId() {
-      if (captainId === null) {
-        userData.map((player) => {
-          player.is_captain ? setCaptainId(player.data.id) : null;
-          player.is_vice_captain ? setViceCaptainId(player.data.id) : null;
-        });
-      }
-    }
-    getCaptainId();
-  }, [userData, captainId]);
+
 
   {
     /* HANDLE GAMEWEEK NAVIGATION */
@@ -85,6 +66,10 @@ function App() {
   function decreaseGameWeek() {
     // GW--
     setGameWeek((prevGameWeek) => prevGameWeek - 1);
+  }
+
+  function updateUserData(data) {
+    setUserData(data)
   }
 
   function renderBtns() {
@@ -136,8 +121,8 @@ function App() {
   }
   const loadTeam = async (userId) => {
     getAllPlayersData();
-    setCaptainId(null);
-    setViceCaptainId(null);
+    // setCaptainId(null);
+    // setViceCaptainId(null);
     const [nextGw] = await getNextGw();
     const userTeam = await getPicks(userId);
     const userPromises = userTeam.map((player) =>
@@ -177,24 +162,22 @@ function App() {
     setUserBank((prev) => prev - playerPrice);
   }
 
-  function handleMakeCaptain(id, gameWeek, gameWeekCaptain) {
-    setGameWeekCaptain((prevGameWeekCaptain) => ({
-      ...prevGameWeekCaptain,
-      [gameWeek]: id,
-    }));
-    if (id === viceCaptainId) {
-      setViceCaptainId(captainId);
-    }
-    setCaptainId(id);
-  }
+  // function handleMakeCaptain(id) {
+  //   if (id === viceCaptainId) {
+  //     setViceCaptainId(captainId);
+  //   }
+  //   setCaptainId(id);
+  // }
 
-  function handleMakeViceCaptain(id) {
-    console.log(userInfo);
-    if (id === captainId) {
-      setCaptainId(viceCaptainId);
-    }
-    setViceCaptainId(id);
-  }
+  // function handleMakeViceCaptain(id) {
+  //   console.log(userInfo);
+  //   if (id === captainId) {
+  //     setCaptainId(viceCaptainId);
+  //   }
+  //   setViceCaptainId(id);
+  // }
+
+
 
   return (
     <div className="App">
@@ -242,14 +225,16 @@ function App() {
                     selectedPositionOption={selectedPositionOption}
                     updateSelectedPosition={updateSelectedPosition}
                     handleSubstituteClick={handleSubstituteClick}
-                    handleMakeCaptain={handleMakeCaptain}
-                    captainId={captainId}
-                    viceCaptainId={viceCaptainId}
-                    handleMakeViceCaptain={handleMakeViceCaptain}
+                    // handleMakeCaptain={handleMakeCaptain}
+                    // captainId={captainId}
+                    // viceCaptainId={viceCaptainId}
+                    // handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
                     updateUserBank={updateUserBank}
                     restoreUserBank={restoreUserBank}
+                    userData={userData}
+                    updateUserData={updateUserData}
                   />
                 </div>
               ))}
@@ -270,14 +255,16 @@ function App() {
                     selectedPositionOption={selectedPositionOption}
                     updateSelectedPosition={updateSelectedPosition}
                     handleSubstituteClick={handleSubstituteClick}
-                    handleMakeCaptain={handleMakeCaptain}
-                    captainId={captainId}
-                    viceCaptainId={viceCaptainId}
-                    handleMakeViceCaptain={handleMakeViceCaptain}
+                    // handleMakeCaptain={handleMakeCaptain}
+                    // // captainId={captainId}
+                    // // viceCaptainId={viceCaptainId}
+                    // handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
                     updateUserBank={updateUserBank}
                     restoreUserBank={restoreUserBank}
+                    userData={userData}
+                    updateUserData={updateUserData}
                   />
                 </div>
               ))}
@@ -298,14 +285,16 @@ function App() {
                     selectedPositionOption={selectedPositionOption}
                     updateSelectedPosition={updateSelectedPosition}
                     handleSubstituteClick={handleSubstituteClick}
-                    handleMakeCaptain={handleMakeCaptain}
-                    captainId={captainId}
-                    viceCaptainId={viceCaptainId}
-                    handleMakeViceCaptain={handleMakeViceCaptain}
+                    // handleMakeCaptain={handleMakeCaptain}
+                    // // captainId={captainId}
+                    // // viceCaptainId={viceCaptainId}
+                    // handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
                     updateUserBank={updateUserBank}
                     restoreUserBank={restoreUserBank}
+                    userData={userData}
+                    updateUserData={updateUserData}
                   />
                 </div>
               ))}
@@ -326,14 +315,16 @@ function App() {
                     selectedPositionOption={selectedPositionOption}
                     updateSelectedPosition={updateSelectedPosition}
                     handleSubstituteClick={handleSubstituteClick}
-                    handleMakeCaptain={handleMakeCaptain}
-                    captainId={captainId}
-                    viceCaptainId={viceCaptainId}
-                    handleMakeViceCaptain={handleMakeViceCaptain}
+                    // handleMakeCaptain={handleMakeCaptain}
+                    // // captainId={captainId}
+                    // // viceCaptainId={viceCaptainId}
+                    // handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
                     updateUserBank={updateUserBank}
                     restoreUserBank={restoreUserBank}
+                    userData={userData}
+                    updateUserData={updateUserData}
                   />
                 </div>
               ))}
@@ -351,14 +342,16 @@ function App() {
                     selectedPositionOption={selectedPositionOption}
                     updateSelectedPosition={updateSelectedPosition}
                     handleSubstituteClick={handleSubstituteClick}
-                    handleMakeCaptain={handleMakeCaptain}
-                    captainId={captainId}
-                    viceCaptainId={viceCaptainId}
-                    handleMakeViceCaptain={handleMakeViceCaptain}
+                    // handleMakeCaptain={handleMakeCaptain}
+                    // // captainId={captainId}
+                    // // viceCaptainId={viceCaptainId}
+                    // handleMakeViceCaptain={handleMakeViceCaptain}
                     gameWeek={gameWeek}
                     gameWeekCaptain={gameWeekCaptain}
                     updateUserBank={updateUserBank}
                     restoreUserBank={restoreUserBank}
+                    userData={userData}
+                    updateUserData={updateUserData}
                   />
                 </div>
               ))}
@@ -371,6 +364,9 @@ function App() {
             selectedPositionOption={selectedPositionOption}
             updateSelectedPosition={updateSelectedPosition}
             userBank={userBank}
+            userData={userData}
+            updateUserData={updateUserData}
+            gameWeek={gameWeek}
           />
         </div>
       </div>

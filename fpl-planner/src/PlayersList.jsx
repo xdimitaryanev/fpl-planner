@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getAllPlayersData, getAllTeams } from "./data/handleData";
 import Player from "./Player";
 
-function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank }) {
+function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank, userData, updateUserData, gameWeek }) {
 
   const [selectedSortOption, setSelectedSortOption] = useState("total-points");
   const [selectedTeamOption, setSelectedTeamOption] = useState("all");
@@ -61,9 +61,7 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank 
           : filteredByPositionPlayerList.filter(
               (player) => player.team === selectedTeamOption
             );
-            console.log(userBank)
       const isPlayerAffordable = isAffordable ? filteredPlayerList.filter((player) => player.data.now_cost <= userBank) : filteredPlayerList
-  console.log(filteredPlayerList)
       setListOfPlayers(isPlayerAffordable);
     };
 
@@ -96,6 +94,8 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank 
     setIsAffordable(e.target.checked)
     setSelectedSortOption("price-hl") 
   }
+
+  
 
   return (
     <>
@@ -154,7 +154,7 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank 
               {listOfPlayers.map((player) => (
                 <td key={player.data.id}>
                   {player.data.total_points}
-                  <Player player={player} />
+                  <Player player={player} userData={userData} updateUserData={updateUserData} gameWeek={gameWeek} />
                 </td>
               ))}
             </tr>

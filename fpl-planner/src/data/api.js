@@ -19,11 +19,11 @@ async function getUserTeamInfo(userId, gw) {
   return await userTeamInfo.json();
 }
 
-async function getPlayerData(playerId) {
+async function getPlayerFixturesData(playerId) {
   const playerData = await fetch(
     `http://localhost:3001/element-summary/${playerId}/`
   );
   return await playerData.json();
 }
 
-export { getGeneralInfo, getUserInfo, getUserTeamInfo, getPlayerData };
+export { getGeneralInfo, getUserInfo, getUserTeamInfo, getPlayerFixturesData };

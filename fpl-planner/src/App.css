@@ -118,3 +118,8 @@ td {
   text-align: center;
   z-index: 999;
 }
+
+.fixtures__wrapper {
+  display: flex;
+  gap: .2em;
+}

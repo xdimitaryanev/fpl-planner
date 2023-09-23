@@ -1,7 +1,7 @@
 import {
   getUserInfo,
   getUserTeamInfo,
-  getPlayerData,
+  getPlayerFixturesData,
   getGeneralInfo,
 } from "./api";
 import fixtureAnalyzer from "../tools/fixtureAnalyzer";
@@ -73,6 +73,11 @@ async function createUserInfo(userId, gw) {
   return userInfoObject;
 }
 
+async function getFixturesOfPlayer(playerId) {
+  const playerFixtures = await getPlayerFixturesData(playerId);
+  return playerFixtures.fixtures
+}
+
 async function createPlayerData(
   playerId,
   gw,
@@ -80,7 +85,7 @@ async function createPlayerData(
   isCaptain,
   isViceCaptain
 ) {
-  const playerFixtures = await getPlayerData(playerId);
+  const playerFixtures = await getPlayerFixturesData(playerId);
   const fixtureDifficultyIndex = fixtureAnalyzer(
     gw,
     5,
@@ -178,10 +183,10 @@ async function getAllPlayersData() {
     return {
       data: player,
       team: getTeamFromTeamId(player.team, allTeams),
-      position: getPositionOfPlayer(player),
+      position: getPositionOfPlayer(player)
     };
   });
-
+console.log(allPlayersData)
   return allPlayersData;
 }
 
@@ -194,4 +199,5 @@ export {
   getAllTeams,
   getAllPlayers,
   getAllPlayersData,
+  getFixturesOfPlayer
 };
