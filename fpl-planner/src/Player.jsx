@@ -84,6 +84,29 @@ function Player({
     handleTransferOutData();
   }
 
+  async function addPlayer(player) {
+    const userDataArr = [...userData];
+    const filteredUserData = userDataArr.filter((data)=> data.transfer_out === true)
+    if (filteredUserData.length > 0) {
+      const playerToReplace = filteredUserData.find((data)=> data.position === player.position)
+      const indexOfPlayerToReplace = userDataArr.indexOf(playerToReplace)
+      const playerData = await createPlayerData(
+        player.data.id,
+        gameWeek,
+        playerToReplace.pick_order,
+        playerToReplace.is_captain,
+        playerToReplace.is_vice_captain
+      )
+      console.log(playerData)
+      console.log(indexOfPlayerToReplace)
+      userDataArr[indexOfPlayerToReplace] = {...userDataArr[indexOfPlayerToReplace], ...playerData, ...{transfer_out: false}}
+      updateUserData(userDataArr);
+      console.log(userDataArr)
+    }
+
+
+  }
+
   function handleTransferOutData() {
     const data = { transfer_out: true };
     const userDataArr = [...userData];
@@ -195,28 +218,7 @@ function Player({
     updateUserData(userDataArr);
   }
 
-  async function addPlayer(player) {
-    const userDataArr = [...userData];
-    const filteredUserData = userDataArr.filter((data)=> data.transfer_out === true)
-    if (filteredUserData.length > 0) {
-      const playerToReplace = filteredUserData.find((data)=> data.position === player.position)
-      const indexOfPlayerToReplace = userDataArr.indexOf(playerToReplace)
-      const playerData = await createPlayerData(
-        player.data.id,
-        gameWeek,
-        playerToReplace.pick_order,
-        playerToReplace.is_captain,
-        playerToReplace.is_vice_captain
-      )
-      console.log(playerData)
-      console.log(indexOfPlayerToReplace)
-      userDataArr[indexOfPlayerToReplace] = {...userDataArr[indexOfPlayerToReplace], ...playerData, ...{transfer_out: false}}
-      updateUserData(userDataArr);
-      console.log(userDataArr)
-    }
 
-
-  }
 
   function renderRemovePlayerPopup() {
     return (

@@ -2,6 +2,18 @@ import React, { useEffect, useState } from "react";
 import { getAllPlayersData, getAllTeams } from "./data/handleData";
 import Player from "./Player";
 
+const excludeDuplicates = (userData, allPlayers) => {
+let newArr = [...allPlayers]
+for (let i=0; i < userData.length; i++) {
+  const player = newArr.find(element=> element.data.id === userData[i].data.id)
+  const index = newArr.indexOf(player)
+  console.log(index)
+  newArr.splice(index,1)
+}
+console.log(newArr)
+return newArr
+};
+
 function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank, userData, updateUserData, gameWeek }) {
 
   const [selectedSortOption, setSelectedSortOption] = useState("total-points");
@@ -13,16 +25,22 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank,
 
   // FETCH AND SORT AND FILTER PLAYERS LIST //
   useEffect(() => {
-    const getFilteredPlayerList = async () => {
+
+
+      const getFilteredPlayerList = async () => {
       const allPlayers = await getAllPlayersData();
+        console.log(userData)
+      const excludeOwnedPlayers = excludeDuplicates(userData,allPlayers)
+      console.log(excludeOwnedPlayers)
+      console.log(allPlayers)
       const filteredByPositionPlayerList =
         selectedPositionOption === "all"
-          ? allPlayers
+          ? excludeOwnedPlayers
           : ["GK", "MID", "FWD", "DEF"].includes(selectedPositionOption)
-          ? allPlayers.filter(
+          ? excludeOwnedPlayers.filter(
               (player) => player.position === selectedPositionOption
             )
-          : allPlayers.filter(
+          : excludeOwnedPlayers.filter(
               (player) => player.team === selectedPositionOption
             );
 
@@ -72,7 +90,7 @@ function PlayersList({ selectedPositionOption, updateSelectedPosition, userBank,
     };
     getAllTeamNames();
     getFilteredPlayerList();
-  }, [selectedTeamOption, selectedSortOption, selectedPositionOption, isAffordable, userBank]);
+  }, [selectedTeamOption, selectedSortOption, selectedPositionOption, isAffordable, userBank,userData]);
 
   // HANDLE ONCHANGE EVENTS //
   function handleSortingOption(e) {
